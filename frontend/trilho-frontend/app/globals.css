@@ -5,11 +5,52 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  /* Base (tema escuro do produto) */
+  --color-trilho-bg: #0f1420;
+  --color-trilho-surface: #171e2e;
+  --color-trilho-surface-2: #1f2937;
+  --color-trilho-surface-3: #26314a;
+  --color-trilho-border: #2a3244;
+ 
+  /* Texto */
+  --color-trilho-text: #e7ebf3;
+  --color-trilho-dim: #9aa4b2;
+  --color-trilho-dim-2: #6b7686;
+ 
+  /* Marca / destaque */
+  --color-trilho-accent: #4f8cff; /* azul primário */
+  --color-trilho-accent-2: #22d3ee; /* ciano secundário */
+ 
+  /* Estados / feedback */
+  --color-trilho-success: #34d399;
+  --color-trilho-warning: #f59e0b;
+  --color-trilho-danger: #f87171;
+ 
+  /* Tema claro (gráficos, diagramas, documentos) */
+  --color-trilho-navy: #1b2432;
+  --color-trilho-gray: #8b95a5;
+ 
+  /* Sombra usada em modais/overlays */
+  --shadow-trilho: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+ 
+/* Gradiente da marca (usado no ícone do logo e em destaques de UI) */
+@utility bg-gradient-trilho {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-trilho-accent) 0%,
+    var(--color-trilho-accent-2) 100%
+  );
+}
+ 
+/* Versão suave do gradiente (fundos de destaque/hero) */
+@utility bg-gradient-trilho-soft {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-trilho-accent) 15%, transparent) 0%,
+    color-mix(in srgb, var(--color-trilho-accent-2) 15%, transparent) 100%
+  );
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,14 +1,27 @@
-export function Input({ type, placeholder, label }: { type: string; placeholder?: string; label?: string }) {
+import { InputHTMLAttributes } from "react";
+
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
+    name: string;
+    label?: string;
+}
+
+export function Input({ name, label, className = "", ...props }: InputProps) {
     return (
         <fieldset className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                {label}
-            </label>
+            {label && (
+                <label
+                    htmlFor={name}
+                    className="mb-2 block text-xs font-medium uppercase tracking-wide text-trilho-dim"
+                >
+                    {label}
+                </label>
+            )}
             <input
-                type={type}
-                placeholder={placeholder}
-                className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                id={name}
+                name={name}
+                className={`w-full rounded-lg border border-trilho-border bg-trilho-surface-2 p-2 text-trilho-text focus:border-trilho-accent focus:outline-none disabled:cursor-not-allowed disabled:border-trilho-border disabled:bg-trilho-surface disabled:text-trilho-dim ${className}`}
+                {...props}
             />
         </fieldset>
-    )
+    );
 }
