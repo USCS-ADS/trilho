@@ -48,7 +48,9 @@ export function ActivateAccountForm({
                 required
             />
 
-            <Button type="submit">Ativar Conta</Button>
+            <Button type="submit" className="w-full">
+                Ativar Conta
+            </Button>
         </form>
     );
 }

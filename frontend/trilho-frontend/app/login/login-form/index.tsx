@@ -34,7 +34,9 @@ export function LoginForm() {
                 </a>
             </div>
 
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" className="w-full">
+                Entrar
+            </Button>
         </form>
     );
 }
