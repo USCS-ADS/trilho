@@ -1,4 +1,4 @@
-import { LinkButton } from "../components/link-button";
+import { LinkButton } from "@/app/components/link-button";
 import { ProductPreview } from "./product-preview";
 
 export function HeroSection() {

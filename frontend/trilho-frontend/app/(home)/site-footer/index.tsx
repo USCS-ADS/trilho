@@ -1,6 +1,6 @@
+import { Logo } from "@/app/components/logo";
+import { NAV_LINKS } from "@/app/nav-links";
 import Link from "next/link";
-import { Logo } from "../components/logo";
-import { NAV_LINKS } from "../nav-links";
 
 export function SiteFooter() {
     return (

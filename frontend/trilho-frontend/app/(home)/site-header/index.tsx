@@ -1,7 +1,8 @@
+import { LinkButton } from "@/app/components/link-button";
+import { Logo } from "@/app/components/logo";
+import { NAV_LINKS } from "@/app/nav-links";
 import Link from "next/link";
-import { Logo } from "../components/logo";
-import { LinkButton } from "../components/link-button";
-import { NAV_LINKS } from "../nav-links";
+
 
 export function SiteHeader() {
     return (

@@ -1,4 +1,4 @@
-import { LinkButton } from "../components/link-button";
+import { LinkButton } from "@/app/components/link-button";
 
 export function CtaSection() {
     return (

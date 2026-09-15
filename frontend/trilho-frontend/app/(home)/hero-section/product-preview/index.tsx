@@ -1,4 +1,4 @@
-import { Logo } from "../../components/logo";
+import { Logo } from "@/app/components/logo";
 import {
     CardTagTone,
     KANBAN_COLUMNS,
