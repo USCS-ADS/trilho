@@ -1,5 +1,5 @@
 import { ComponentType, SVGProps } from "react";
-import { BoltIcon, GitBranchIcon, UsersIcon } from "./icons";
+import { BoltIcon, GitBranchIcon, UsersIcon } from "@/app/components/icons";
 
 interface Differentiator {
     icon: ComponentType<SVGProps<SVGSVGElement>>;
