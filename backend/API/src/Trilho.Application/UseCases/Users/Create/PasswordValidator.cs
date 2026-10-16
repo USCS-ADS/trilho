@@ -1,9 +1,9 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.Validators;
 using Trilho.Exception;
 using System.Text.RegularExpressions;
 
-namespace GCP.Application.UseCases.Users;
+namespace Trilho.Application.UseCases.Users;
 public class PasswordValidator<T> : PropertyValidator<T, string>
 {
     private const string ERROR_MESSAGE_KEY = "ErrorMessage";

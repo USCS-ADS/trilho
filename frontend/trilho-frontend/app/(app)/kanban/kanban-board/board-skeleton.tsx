@@ -1,31 +1,24 @@
-import { KanbanColumnData } from "./mock-data";
+import { STATUS_LABELS, TASK_STATUSES } from "@/app/lib/tasks/meta";
 
 /**
- * Versão estática do board, sem os hooks do dnd-kit. Renderizada até o
- * componente montar no cliente, pra evitar mismatch de hidratação: os
- * atributos de acessibilidade que o dnd-kit gera (aria-describedby) usam um
- * contador que o Strict Mode do React incrementa de forma diferente no
- * servidor e no cliente. Sem interatividade nesta versão não há nada pra
- * dessincronizar.
+ * Esqueleto estático do board, exibido enquanto o board interativo (dnd-kit)
+ * carrega só no cliente — ver comentário em `index.tsx`.
  */
-export function BoardSkeleton({ columns }: { columns: KanbanColumnData[] }) {
+export function BoardSkeleton() {
     return (
         <div className="flex gap-4 overflow-x-auto pb-2">
-            {columns.map((column) => (
-                <div key={column.id} className="flex w-72 shrink-0 flex-col">
-                    <div className="mb-3 flex items-center justify-between px-1">
+            {TASK_STATUSES.map((status) => (
+                <div key={status} className="flex w-72 shrink-0 flex-col">
+                    <div className="mb-3 px-1">
                         <p className="text-xs font-semibold uppercase tracking-wide text-trilho-dim">
-                            {column.label}
+                            {STATUS_LABELS[status]}
                         </p>
-                        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-trilho-surface-3 px-1.5 text-[11px] text-trilho-dim">
-                            {column.cards.length}
-                        </span>
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        {column.cards.map((card) => (
+                        {[0, 1, 2].map((index) => (
                             <div
-                                key={card.id}
+                                key={index}
                                 className="h-16 animate-pulse rounded-lg border border-trilho-border bg-trilho-surface-2"
                             />
                         ))}

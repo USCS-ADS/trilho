@@ -118,27 +118,195 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EMAIL_OR_PASSWORD_INVALID" xml:space="preserve">
-    <value>email ou senha invalidos</value>
+    <value>e-mail ou senha inválidos</value>
   </data>
   <data name="EMAIL_REQUIRED" xml:space="preserve">
-    <value>o email é obrigatório</value>
+    <value>o e-mail é obrigatório</value>
   </data>
   <data name="INVALID_EMAIL" xml:space="preserve">
-    <value>email inválido</value>
+    <value>e-mail inválido</value>
   </data>
   <data name="INVALID_PASSWORD" xml:space="preserve">
-    <value>Sua senha deve ter no mínimo 8 caracteres, contento pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (por exemplo !, ?, *, .)</value>
+    <value>Sua senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (! ? * . &amp; $ # @).</value>
   </data>
   <data name="NAME_REQUIRED" xml:space="preserve">
     <value>o nome é obrigatório</value>
   </data>
   <data name="ROLE_REQUIRED" xml:space="preserve">
-    <value>O Cargo é obrigatório</value>
+    <value>o perfil de acesso é obrigatório</value>
   </data>
   <data name="UNKNOWN_ERROR" xml:space="preserve">
     <value>Erro desconhecido</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
     <value>Usuário não encontrado</value>
+  </data>
+  <data name="EMAIL_ALREADY_REGISTERED" xml:space="preserve">
+    <value>este e-mail já está cadastrado</value>
+  </data>
+  <data name="ROLE_INVALID" xml:space="preserve">
+    <value>o perfil de acesso é inválido</value>
+  </data>
+  <data name="FORBIDDEN_ACTION" xml:space="preserve">
+    <value>você não tem permissão para executar esta ação</value>
+  </data>
+  <data name="ONLY_ADMIN_CAN_CHANGE_ROLE" xml:space="preserve">
+    <value>apenas administradores podem alterar o perfil de acesso de um usuário</value>
+  </data>
+  <data name="USER_CAN_ONLY_EDIT_OWN_PROFILE" xml:space="preserve">
+    <value>usuários só podem editar o próprio perfil</value>
+  </data>
+  <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>é necessário estar autenticado</value>
+  </data>
+  <data name="CANNOT_DELETE_YOURSELF" xml:space="preserve">
+    <value>você não pode excluir a própria conta</value>
+  </data>
+  <data name="TEAM_NOT_FOUND" xml:space="preserve">
+    <value>Time não encontrado.</value>
+  </data>
+  <data name="TEAM_NAME_REQUIRED" xml:space="preserve">
+    <value>O nome do time é obrigatório.</value>
+  </data>
+  <data name="TEAM_NAME_TOO_LONG" xml:space="preserve">
+    <value>O nome do time deve ter no máximo 100 caracteres.</value>
+  </data>
+  <data name="TEAM_DESCRIPTION_TOO_LONG" xml:space="preserve">
+    <value>A descrição do time deve ter no máximo 500 caracteres.</value>
+  </data>
+  <data name="TEAM_NAME_ALREADY_EXISTS" xml:space="preserve">
+    <value>Já existe um time com este nome.</value>
+  </data>
+  <data name="TEAM_LEADER_REQUIRED" xml:space="preserve">
+    <value>O líder do time é obrigatório.</value>
+  </data>
+  <data name="TEAM_LEADER_INVALID_ROLE" xml:space="preserve">
+    <value>O líder do time deve ter o perfil de líder ou administrador.</value>
+  </data>
+  <data name="USER_ALREADY_LEADS_TEAM" xml:space="preserve">
+    <value>Este usuário já lidera outro time.</value>
+  </data>
+  <data name="USER_LEADS_TEAM" xml:space="preserve">
+    <value>Este usuário lidera um time. Troque o líder do time antes.</value>
+  </data>
+  <data name="USER_ALREADY_TEAM_MEMBER" xml:space="preserve">
+    <value>Este usuário já é membro do time.</value>
+  </data>
+  <data name="USER_NOT_TEAM_MEMBER" xml:space="preserve">
+    <value>Este usuário não é membro do time.</value>
+  </data>
+  <data name="CANNOT_REMOVE_TEAM_LEADER" xml:space="preserve">
+    <value>O líder do time não pode ser removido. Troque o líder antes.</value>
+  </data>
+  <data name="TEAM_ARCHIVED" xml:space="preserve">
+    <value>O time está arquivado.</value>
+  </data>
+  <data name="TEAM_NOT_ARCHIVED" xml:space="preserve">
+    <value>O time não está arquivado.</value>
+  </data>
+  <data name="USER_NOT_ACTIVE" xml:space="preserve">
+    <value>Este usuário não está ativo.</value>
+  </data>
+  <data name="USER_ID_REQUIRED" xml:space="preserve">
+    <value>O usuário é obrigatório.</value>
+  </data>
+  <data name="TASK_NOT_FOUND" xml:space="preserve">
+    <value>Tarefa não encontrada.</value>
+  </data>
+  <data name="TASK_TITLE_REQUIRED" xml:space="preserve">
+    <value>O título da tarefa é obrigatório.</value>
+  </data>
+  <data name="TASK_TITLE_TOO_LONG" xml:space="preserve">
+    <value>O título da tarefa deve ter no máximo 200 caracteres.</value>
+  </data>
+  <data name="TASK_DESCRIPTION_TOO_LONG" xml:space="preserve">
+    <value>A descrição da tarefa deve ter no máximo 2000 caracteres.</value>
+  </data>
+  <data name="TASK_TEAM_REQUIRED" xml:space="preserve">
+    <value>O time da tarefa é obrigatório.</value>
+  </data>
+  <data name="TASK_STATUS_INVALID" xml:space="preserve">
+    <value>O status da tarefa é inválido.</value>
+  </data>
+  <data name="TASK_PRIORITY_INVALID" xml:space="preserve">
+    <value>A prioridade da tarefa é inválida.</value>
+  </data>
+  <data name="TASK_POSITION_INVALID" xml:space="preserve">
+    <value>A posição na coluna é inválida.</value>
+  </data>
+  <data name="TASK_ASSIGNEE_NOT_TEAM_MEMBER" xml:space="preserve">
+    <value>O responsável deve ser membro do time da tarefa.</value>
+  </data>
+  <data name="TASK_HAS_PENDING_SUBTASKS" xml:space="preserve">
+    <value>A tarefa possui subtarefas pendentes.</value>
+  </data>
+  <data name="TASK_IS_DONE" xml:space="preserve">
+    <value>A tarefa já está concluída.</value>
+  </data>
+  <data name="TEAM_HAS_TASKS" xml:space="preserve">
+    <value>O time possui tarefas. Arquive-o em vez de excluir.</value>
+  </data>
+  <data name="SUBTASK_NOT_FOUND" xml:space="preserve">
+    <value>Subtarefa não encontrada.</value>
+  </data>
+  <data name="SUBTASK_TITLE_REQUIRED" xml:space="preserve">
+    <value>O título da subtarefa é obrigatório.</value>
+  </data>
+  <data name="SUBTASK_TITLE_TOO_LONG" xml:space="preserve">
+    <value>O título da subtarefa deve ter no máximo 200 caracteres.</value>
+  </data>
+  <data name="COMMENT_NOT_FOUND" xml:space="preserve">
+    <value>Comentário não encontrado.</value>
+  </data>
+  <data name="COMMENT_BODY_REQUIRED" xml:space="preserve">
+    <value>O texto do comentário é obrigatório.</value>
+  </data>
+  <data name="COMMENT_BODY_TOO_LONG" xml:space="preserve">
+    <value>O comentário deve ter no máximo 2000 caracteres.</value>
+  </data>
+  <data name="INVITE_INVALID" xml:space="preserve">
+    <value>O convite é inválido ou expirou.</value>
+  </data>
+  <data name="INVITE_NOT_FOUND" xml:space="preserve">
+    <value>Convite não encontrado.</value>
+  </data>
+  <data name="INVITE_ROLE_NOT_ALLOWED" xml:space="preserve">
+    <value>Você só pode convidar membros para o seu time.</value>
+  </data>
+  <data name="INVITE_TEAM_REQUIRED" xml:space="preserve">
+    <value>O time do convite é obrigatório.</value>
+  </data>
+  <data name="INVITE_TOKEN_REQUIRED" xml:space="preserve">
+    <value>O token do convite é obrigatório.</value>
+  </data>
+  <data name="PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
+    <value>O código de verificação é inválido ou expirou.</value>
+  </data>
+  <data name="PASSWORD_RESET_CODE_REQUIRED" xml:space="preserve">
+    <value>O código de verificação deve ter 6 dígitos.</value>
+  </data>
+  <data name="NOTIFICATION_NOT_FOUND" xml:space="preserve">
+    <value>Notificação não encontrada.</value>
+  </data>
+  <data name="GIT_REPOSITORY_NOT_FOUND" xml:space="preserve">
+    <value>Repositório não encontrado.</value>
+  </data>
+  <data name="GIT_REPOSITORY_ALREADY_CONNECTED" xml:space="preserve">
+    <value>Este repositório já está conectado.</value>
+  </data>
+  <data name="GIT_REPOSITORY_NAME_INVALID" xml:space="preserve">
+    <value>O nome do repositório deve estar no formato dono/repositório.</value>
+  </data>
+  <data name="GIT_PROVIDER_INVALID" xml:space="preserve">
+    <value>O provedor Git é inválido. Use github ou gitlab.</value>
+  </data>
+  <data name="GIT_EVENTS_INVALID" xml:space="preserve">
+    <value>Os eventos devem ser um ou mais de: commit, pull_request, merge.</value>
+  </data>
+  <data name="GIT_WEBHOOK_SIGNATURE_INVALID" xml:space="preserve">
+    <value>Assinatura do webhook inválida.</value>
+  </data>
+  <data name="GIT_WEBHOOK_PAYLOAD_INVALID" xml:space="preserve">
+    <value>O conteúdo do webhook é inválido.</value>
   </data>
 </root>

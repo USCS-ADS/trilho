@@ -1,14 +1,18 @@
 "use client";
 
+import { logout } from "@/app/lib/session/actions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentType, SVGProps } from "react";
+import { Avatar } from "../avatar";
+import { useCurrentUser } from "../current-user";
 import {
     CheckSquareIcon,
     ColumnsIcon,
     GearIcon,
     GitBranchIcon,
     GridIcon,
+    LogOutIcon,
     UsersIcon,
 } from "../icons";
 import { Logo } from "../logo";
@@ -59,25 +63,37 @@ const NAV_ITEMS: SidebarNavItem[] = [
     },
 ];
 
+interface SidebarProps {
+    /** Chamado ao clicar num item de navegação (ex: fechar o menu no mobile). */
+    onNavigate?: () => void;
+}
+
 /** Navegação lateral das páginas autenticadas — compartilhada via `app/(app)/layout.tsx`. */
-export function Sidebar() {
+export function Sidebar({ onNavigate }: SidebarProps) {
     const pathname = usePathname();
+    const currentUser = useCurrentUser();
 
     return (
-        <aside className="flex w-60 shrink-0 flex-col gap-1 border-r border-trilho-border bg-trilho-surface p-4">
-            <Link href="/dashboard" className="mb-6 flex items-center gap-2 px-2">
+        <aside className="flex h-full w-60 shrink-0 flex-col gap-1 border-r border-trilho-border bg-trilho-surface p-4">
+            <Link
+                href="/dashboard"
+                onClick={onNavigate}
+                className="mb-6 flex items-center gap-2 px-2"
+            >
                 <Logo size={32} />
                 <span className="text-lg font-semibold text-trilho-text">Trilho</span>
             </Link>
 
-            <nav className="flex flex-col gap-1">
+            <nav aria-label="Navegação principal" className="flex flex-1 flex-col gap-1">
                 {NAV_ITEMS.map(({ label, href, icon: Icon, iconClassName }) => {
-                    const isActive = pathname === href;
+                    const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
                     return (
                         <Link
                             key={href}
                             href={href}
+                            onClick={onNavigate}
+                            aria-current={isActive ? "page" : undefined}
                             className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
                                 isActive
                                     ? "bg-trilho-surface-2 text-trilho-text"
@@ -94,6 +110,26 @@ export function Sidebar() {
                     );
                 })}
             </nav>
+
+            {currentUser && (
+                <div className="mt-4 flex items-center gap-3 border-t border-trilho-border pt-4">
+                    <Avatar initials={currentUser.initials} />
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-trilho-text">
+                            {currentUser.name}
+                        </p>
+                        <form action={logout}>
+                            <button
+                                type="submit"
+                                className="inline-flex items-center gap-1 text-xs text-trilho-dim transition-colors hover:text-trilho-text"
+                            >
+                                <LogOutIcon className="h-3 w-3" />
+                                Sair
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </aside>
     );
 }

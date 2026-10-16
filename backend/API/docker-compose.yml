@@ -1,0 +1,45 @@
+# Desenvolvimento local.
+#   docker compose up -d                      -> só o MySQL (rode a API com dotnet run)
+#   docker compose --profile full up -d --build -> MySQL + API (usa o arquivo .env; veja .env.example)
+services:
+  mysql:
+    image: mysql:8.0.35
+    container_name: trilho-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-trilho_dev_password}
+      MYSQL_DATABASE: trilhodb
+    ports:
+      - "3306:3306"
+    volumes:
+      - trilho-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    profiles: ["full"]
+    build: .
+    container_name: trilho-api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Connection: "Server=mysql;Port=3306;Database=trilhodb;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:-trilho_dev_password}"
+      Settings__Jwt__SigningKey: "${JWT_SIGNING_KEY:?defina JWT_SIGNING_KEY no .env}"
+      Settings__SeedAdmin__Email: "${SEED_ADMIN_EMAIL:?defina SEED_ADMIN_EMAIL no .env}"
+      Settings__SeedAdmin__Password: "${SEED_ADMIN_PASSWORD:?defina SEED_ADMIN_PASSWORD no .env}"
+      Settings__AllowedOrigins__0: "${FRONTEND_ORIGIN:-http://localhost:3000}"
+      Settings__PublicApiBaseUrl: "${PUBLIC_API_BASE_URL:-http://localhost:8080}"
+      Settings__FrontendBaseUrl: "${FRONTEND_BASE_URL:-http://localhost:3000}"
+    volumes:
+      - trilho-api-keys:/keys
+
+volumes:
+  trilho-mysql-data:
+  trilho-api-keys:

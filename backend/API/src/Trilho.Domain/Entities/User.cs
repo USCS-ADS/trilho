@@ -1,4 +1,4 @@
-﻿namespace Trilho.Domain.Entities;
+namespace Trilho.Domain.Entities;
 public class User
 {
     public long Id { get; set; }
@@ -7,4 +7,6 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Role {  get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

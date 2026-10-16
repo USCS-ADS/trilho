@@ -1,6 +1,6 @@
 import { LinkButton } from "@/app/components/link-button";
 import { Logo } from "@/app/components/logo";
-import { NAV_LINKS } from "@/app/nav-links";
+import { NAV_LINKS } from "../nav-links";
 import Link from "next/link";
 
 
@@ -25,18 +25,9 @@ export function SiteHeader() {
                     ))}
                 </nav>
 
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/login"
-                        className="text-sm text-trilho-dim hover:text-trilho-text"
-                    >
-                        Entrar
-                    </Link>
-                    {/* TODO: apontar para a rota de cadastro quando ela existir */}
-                    <LinkButton href="#" className="text-sm">
-                        Começar agora
-                    </LinkButton>
-                </div>
+                <LinkButton href="/login" className="text-sm">
+                    Acessar plataforma
+                </LinkButton>
             </div>
         </header>
     );

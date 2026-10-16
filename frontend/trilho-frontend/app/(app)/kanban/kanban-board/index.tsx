@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { BoardSkeleton } from "./board-skeleton";
-import { INITIAL_COLUMNS } from "./mock-data";
 
 /**
  * O board é carregado só no cliente (`ssr: false`): o dnd-kit gera
@@ -15,5 +14,5 @@ import { INITIAL_COLUMNS } from "./mock-data";
  */
 export const KanbanBoard = dynamic(() => import("./board").then((mod) => mod.KanbanBoard), {
     ssr: false,
-    loading: () => <BoardSkeleton columns={INITIAL_COLUMNS} />,
+    loading: () => <BoardSkeleton />,
 });

@@ -1,3 +1,5 @@
+import { Card, CardTitle } from "@/app/components/card";
+
 // TODO: substituir por dados reais da API (tarefas concluídas por sprint).
 const SPRINT_COMPLETIONS = [
     { sprint: "S1", value: 18, tone: "bg-trilho-surface-3" },
@@ -11,10 +13,8 @@ export function SprintChart() {
     const maxValue = Math.max(...SPRINT_COMPLETIONS.map((sprint) => sprint.value));
 
     return (
-        <div className="rounded-xl border border-trilho-border bg-trilho-surface p-5">
-            <p className="mb-4 text-xs font-medium uppercase tracking-wide text-trilho-dim">
-                Tarefas concluídas por sprint
-            </p>
+        <Card>
+            <CardTitle>Tarefas concluídas por sprint</CardTitle>
 
             <div className="flex h-40 items-stretch gap-3">
                 {SPRINT_COMPLETIONS.map((sprint) => (
@@ -32,6 +32,6 @@ export function SprintChart() {
                     </div>
                 ))}
             </div>
-        </div>
+        </Card>
     );
 }

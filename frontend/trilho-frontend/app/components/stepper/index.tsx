@@ -1,3 +1,5 @@
+import { CheckIcon } from "../icons";
+
 interface StepperProps {
     totalSteps: number;
     /** Passo atual, 1-indexado. Passos anteriores aparecem concluídos. */
@@ -21,7 +23,11 @@ export function Stepper({ totalSteps, currentStep }: StepperProps) {
                                   : "border-trilho-border text-trilho-dim"
                         }`}
                     >
-                        {step < currentStep ? <CheckIcon /> : step}
+                        {step < currentStep ? (
+                            <CheckIcon className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        ) : (
+                            step
+                        )}
                     </span>
 
                     {step < totalSteps && (
@@ -34,21 +40,5 @@ export function Stepper({ totalSteps, currentStep }: StepperProps) {
                 </div>
             ))}
         </div>
-    );
-}
-
-function CheckIcon() {
-    return (
-        <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-3.5 w-3.5"
-        >
-            <path d="M20 6 9 17l-5-5" />
-        </svg>
     );
 }

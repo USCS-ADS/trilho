@@ -13,10 +13,10 @@ import {
     useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useState } from "react";
-import { KanbanCardContent } from "./kanban-card";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { KanbanCardOverlay } from "./kanban-card";
 import { KanbanColumn } from "./kanban-column";
-import { INITIAL_COLUMNS, KanbanCardData, KanbanColumnData } from "./mock-data";
+import type { KanbanCardData, KanbanColumnData } from "./types";
 
 function findColumnByCardId(columns: KanbanColumnData[], cardId: string) {
     return columns.find((column) => column.cards.some((card) => card.id === cardId));
@@ -26,9 +26,25 @@ function findColumnById(columns: KanbanColumnData[], columnId: string) {
     return columns.find((column) => column.id === columnId);
 }
 
-export function KanbanBoard() {
-    const [columns, setColumns] = useState(INITIAL_COLUMNS);
+/** Resultado de um arrasto que mudou o card de coluna e/ou posição. */
+export interface CardMove {
+    cardId: string;
+    columnId: string;
+    /** Índice final dentro da coluna (a partir de 0). */
+    position: number;
+    /** Estado do board antes do arrasto, para desfazer se o servidor recusar. */
+    rollback: KanbanColumnData[];
+}
+
+interface KanbanBoardProps {
+    columns: KanbanColumnData[];
+    onColumnsChange: Dispatch<SetStateAction<KanbanColumnData[]>>;
+    onCardMoved?: (move: CardMove) => void;
+}
+
+export function KanbanBoard({ columns, onColumnsChange, onCardMoved }: KanbanBoardProps) {
     const [activeCard, setActiveCard] = useState<KanbanCardData | null>(null);
+    const dragSnapshot = useRef<KanbanColumnData[]>(columns);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -37,6 +53,7 @@ export function KanbanBoard() {
 
     function handleDragStart(event: DragStartEvent) {
         const cardId = String(event.active.id);
+        dragSnapshot.current = columns;
         const column = findColumnByCardId(columns, cardId);
         setActiveCard(column?.cards.find((card) => card.id === cardId) ?? null);
     }
@@ -50,7 +67,7 @@ export function KanbanBoard() {
         const overId = String(over.id);
         if (activeId === overId) return;
 
-        setColumns((prevColumns) => {
+        onColumnsChange((prevColumns) => {
             const sourceColumn = findColumnByCardId(prevColumns, activeId);
             const targetColumn =
                 findColumnByCardId(prevColumns, overId) ?? findColumnById(prevColumns, overId);
@@ -82,31 +99,44 @@ export function KanbanBoard() {
         });
     }
 
-    /** Ajusta a posição final do card dentro da coluna em que ele foi soltado. */
+    /** Ajusta a posição final do card e avisa quem persiste (coluna/posição novas). */
     function handleDragEnd(event: DragEndEvent) {
         setActiveCard(null);
-        // TODO: persistir a nova coluna/posição do card via API aqui.
 
         const { active, over } = event;
-        if (!over) return;
-
         const activeId = String(active.id);
-        const overId = String(over.id);
-        if (activeId === overId) return;
+        let finalColumns = columns;
 
-        setColumns((prevColumns) => {
-            const column = findColumnByCardId(prevColumns, activeId);
-            if (!column) return prevColumns;
+        if (over && activeId !== String(over.id)) {
+            const column = findColumnByCardId(columns, activeId);
+            const oldIndex = column?.cards.findIndex((card) => card.id === activeId) ?? -1;
+            const newIndex = column?.cards.findIndex((card) => card.id === String(over.id)) ?? -1;
 
-            const oldIndex = column.cards.findIndex((card) => card.id === activeId);
-            const newIndex = column.cards.findIndex((card) => card.id === overId);
-            if (oldIndex === -1 || newIndex === -1) return prevColumns;
+            if (column && oldIndex !== -1 && newIndex !== -1) {
+                finalColumns = columns.map((col) =>
+                    col.id === column.id
+                        ? { ...col, cards: arrayMove(col.cards, oldIndex, newIndex) }
+                        : col,
+                );
+                onColumnsChange(finalColumns);
+            }
+        }
 
-            return prevColumns.map((col) =>
-                col.id === column.id
-                    ? { ...col, cards: arrayMove(col.cards, oldIndex, newIndex) }
-                    : col,
-            );
+        const startColumn = findColumnByCardId(dragSnapshot.current, activeId);
+        const endColumn = findColumnByCardId(finalColumns, activeId);
+        if (!startColumn || !endColumn) return;
+
+        const startIndex = startColumn.cards.findIndex((card) => card.id === activeId);
+        const endIndex = endColumn.cards.findIndex((card) => card.id === activeId);
+
+        // Soltou onde estava: nada a persistir.
+        if (startColumn.id === endColumn.id && startIndex === endIndex) return;
+
+        onCardMoved?.({
+            cardId: activeId,
+            columnId: endColumn.id,
+            position: endIndex,
+            rollback: dragSnapshot.current,
         });
     }
 
@@ -126,11 +156,7 @@ export function KanbanBoard() {
             </div>
 
             <DragOverlay>
-                {activeCard && (
-                    <div className="rotate-1 rounded-lg border border-trilho-border bg-trilho-surface-2 p-3 text-sm shadow-trilho">
-                        <KanbanCardContent card={activeCard} />
-                    </div>
-                )}
+                {activeCard && <KanbanCardOverlay card={activeCard} />}
             </DragOverlay>
         </DndContext>
     );

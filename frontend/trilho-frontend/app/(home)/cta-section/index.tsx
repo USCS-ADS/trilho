@@ -13,8 +13,7 @@ export function CtaSection() {
                 </p>
 
                 <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    {/* TODO: apontar para a rota de cadastro quando ela existir */}
-                    <LinkButton href="#">Criar conta grátis</LinkButton>
+                    <LinkButton href="/login">Acessar plataforma</LinkButton>
                     {/* TODO: apontar para um canal de contato real (e-mail, formulário) */}
                     <LinkButton href="#" variant="secondary">
                         Falar com o time

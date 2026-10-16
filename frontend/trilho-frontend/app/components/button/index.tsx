@@ -1,10 +1,11 @@
 import { ButtonHTMLAttributes } from "react";
 
-export type ButtonVariant = "primary" | "secondary";
+export type ButtonVariant = "primary" | "secondary" | "danger";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-    primary: "bg-trilho-accent text-white",
+    primary: "bg-trilho-accent-strong text-white",
     secondary: "border border-trilho-border text-trilho-text hover:bg-trilho-surface-2",
+    danger: "border border-trilho-danger/40 text-trilho-danger hover:bg-trilho-danger/10",
 };
 
 /**

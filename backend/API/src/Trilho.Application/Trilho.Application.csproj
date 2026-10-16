@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="UseCases.Test" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Trilho.Communication\Trilho.Communication.csproj" />
     <ProjectReference Include="..\Trilho.Domain\Trilho.Domain.csproj" />
     <ProjectReference Include="..\Trilho.Exception\Trilho.Exception.csproj" />

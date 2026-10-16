@@ -22,16 +22,14 @@ export function HeroSection() {
                 </p>
 
                 <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                    {/* TODO: apontar para a rota de cadastro quando ela existir */}
-                    <LinkButton href="#">Começar agora</LinkButton>
+                    <LinkButton href="/login">Acessar plataforma</LinkButton>
                     <LinkButton href="#como-funciona" variant="secondary">
                         Ver como funciona
                     </LinkButton>
                 </div>
 
                 <p className="mt-4 text-xs text-trilho-dim-2">
-                    Sem necessidade de cartão de crédito · Convide seu time em
-                    minutos
+                    Acesso por convite · Convide seu time em minutos
                 </p>
             </div>
 

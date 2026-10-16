@@ -127,7 +127,7 @@
     <value>invalid email</value>
   </data>
   <data name="INVALID_PASSWORD" xml:space="preserve">
-    <value>Your password must be at least 8 characters long, containing at least one letter, one lowercase letter, one number, and one special character (e.g. !, ?, *, .).</value>
+    <value>Your password must be at least 8 characters long, containing at least one uppercase letter, one lowercase letter, one number, and one special character (! ? * . &amp; $ # @).</value>
   </data>
   <data name="NAME_REQUIRED" xml:space="preserve">
     <value>the name is required</value>
@@ -140,5 +140,173 @@
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
     <value>User not found</value>
+  </data>
+  <data name="EMAIL_ALREADY_REGISTERED" xml:space="preserve">
+    <value>this email is already registered</value>
+  </data>
+  <data name="ROLE_INVALID" xml:space="preserve">
+    <value>the role is invalid</value>
+  </data>
+  <data name="FORBIDDEN_ACTION" xml:space="preserve">
+    <value>you do not have permission to perform this action</value>
+  </data>
+  <data name="ONLY_ADMIN_CAN_CHANGE_ROLE" xml:space="preserve">
+    <value>only administrators can change the role of a user</value>
+  </data>
+  <data name="USER_CAN_ONLY_EDIT_OWN_PROFILE" xml:space="preserve">
+    <value>users can only edit their own profile</value>
+  </data>
+  <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>authentication is required</value>
+  </data>
+  <data name="CANNOT_DELETE_YOURSELF" xml:space="preserve">
+    <value>you cannot delete your own account</value>
+  </data>
+  <data name="TEAM_NOT_FOUND" xml:space="preserve">
+    <value>Team not found.</value>
+  </data>
+  <data name="TEAM_NAME_REQUIRED" xml:space="preserve">
+    <value>The team name is required.</value>
+  </data>
+  <data name="TEAM_NAME_TOO_LONG" xml:space="preserve">
+    <value>The team name must have at most 100 characters.</value>
+  </data>
+  <data name="TEAM_DESCRIPTION_TOO_LONG" xml:space="preserve">
+    <value>The team description must have at most 500 characters.</value>
+  </data>
+  <data name="TEAM_NAME_ALREADY_EXISTS" xml:space="preserve">
+    <value>There is already a team with this name.</value>
+  </data>
+  <data name="TEAM_LEADER_REQUIRED" xml:space="preserve">
+    <value>The team leader is required.</value>
+  </data>
+  <data name="TEAM_LEADER_INVALID_ROLE" xml:space="preserve">
+    <value>The team leader must have the leader or administrator profile.</value>
+  </data>
+  <data name="USER_ALREADY_LEADS_TEAM" xml:space="preserve">
+    <value>This user already leads another team.</value>
+  </data>
+  <data name="USER_LEADS_TEAM" xml:space="preserve">
+    <value>This user leads a team. Change the team leader first.</value>
+  </data>
+  <data name="USER_ALREADY_TEAM_MEMBER" xml:space="preserve">
+    <value>This user is already a member of the team.</value>
+  </data>
+  <data name="USER_NOT_TEAM_MEMBER" xml:space="preserve">
+    <value>This user is not a member of the team.</value>
+  </data>
+  <data name="CANNOT_REMOVE_TEAM_LEADER" xml:space="preserve">
+    <value>The team leader cannot be removed. Change the leader first.</value>
+  </data>
+  <data name="TEAM_ARCHIVED" xml:space="preserve">
+    <value>The team is archived.</value>
+  </data>
+  <data name="TEAM_NOT_ARCHIVED" xml:space="preserve">
+    <value>The team is not archived.</value>
+  </data>
+  <data name="USER_NOT_ACTIVE" xml:space="preserve">
+    <value>This user is not active.</value>
+  </data>
+  <data name="USER_ID_REQUIRED" xml:space="preserve">
+    <value>The user is required.</value>
+  </data>
+  <data name="TASK_NOT_FOUND" xml:space="preserve">
+    <value>Task not found.</value>
+  </data>
+  <data name="TASK_TITLE_REQUIRED" xml:space="preserve">
+    <value>The task title is required.</value>
+  </data>
+  <data name="TASK_TITLE_TOO_LONG" xml:space="preserve">
+    <value>The task title must have at most 200 characters.</value>
+  </data>
+  <data name="TASK_DESCRIPTION_TOO_LONG" xml:space="preserve">
+    <value>The task description must have at most 2000 characters.</value>
+  </data>
+  <data name="TASK_TEAM_REQUIRED" xml:space="preserve">
+    <value>The task team is required.</value>
+  </data>
+  <data name="TASK_STATUS_INVALID" xml:space="preserve">
+    <value>The task status is invalid.</value>
+  </data>
+  <data name="TASK_PRIORITY_INVALID" xml:space="preserve">
+    <value>The task priority is invalid.</value>
+  </data>
+  <data name="TASK_POSITION_INVALID" xml:space="preserve">
+    <value>The position in the column is invalid.</value>
+  </data>
+  <data name="TASK_ASSIGNEE_NOT_TEAM_MEMBER" xml:space="preserve">
+    <value>The assignee must be a member of the task team.</value>
+  </data>
+  <data name="TASK_HAS_PENDING_SUBTASKS" xml:space="preserve">
+    <value>The task has pending subtasks.</value>
+  </data>
+  <data name="TASK_IS_DONE" xml:space="preserve">
+    <value>The task is already done.</value>
+  </data>
+  <data name="TEAM_HAS_TASKS" xml:space="preserve">
+    <value>The team has tasks. Archive it instead of deleting.</value>
+  </data>
+  <data name="SUBTASK_NOT_FOUND" xml:space="preserve">
+    <value>Subtask not found.</value>
+  </data>
+  <data name="SUBTASK_TITLE_REQUIRED" xml:space="preserve">
+    <value>The subtask title is required.</value>
+  </data>
+  <data name="SUBTASK_TITLE_TOO_LONG" xml:space="preserve">
+    <value>The subtask title must have at most 200 characters.</value>
+  </data>
+  <data name="COMMENT_NOT_FOUND" xml:space="preserve">
+    <value>Comment not found.</value>
+  </data>
+  <data name="COMMENT_BODY_REQUIRED" xml:space="preserve">
+    <value>The comment text is required.</value>
+  </data>
+  <data name="COMMENT_BODY_TOO_LONG" xml:space="preserve">
+    <value>The comment must have at most 2000 characters.</value>
+  </data>
+  <data name="INVITE_INVALID" xml:space="preserve">
+    <value>The invitation is invalid or has expired.</value>
+  </data>
+  <data name="INVITE_NOT_FOUND" xml:space="preserve">
+    <value>Invitation not found.</value>
+  </data>
+  <data name="INVITE_ROLE_NOT_ALLOWED" xml:space="preserve">
+    <value>You can only invite members to your team.</value>
+  </data>
+  <data name="INVITE_TEAM_REQUIRED" xml:space="preserve">
+    <value>The team of the invitation is required.</value>
+  </data>
+  <data name="INVITE_TOKEN_REQUIRED" xml:space="preserve">
+    <value>The invitation token is required.</value>
+  </data>
+  <data name="PASSWORD_RESET_CODE_INVALID" xml:space="preserve">
+    <value>The verification code is invalid or has expired.</value>
+  </data>
+  <data name="PASSWORD_RESET_CODE_REQUIRED" xml:space="preserve">
+    <value>The verification code must have 6 digits.</value>
+  </data>
+  <data name="NOTIFICATION_NOT_FOUND" xml:space="preserve">
+    <value>Notification not found.</value>
+  </data>
+  <data name="GIT_REPOSITORY_NOT_FOUND" xml:space="preserve">
+    <value>Repository not found.</value>
+  </data>
+  <data name="GIT_REPOSITORY_ALREADY_CONNECTED" xml:space="preserve">
+    <value>This repository is already connected.</value>
+  </data>
+  <data name="GIT_REPOSITORY_NAME_INVALID" xml:space="preserve">
+    <value>The repository name must be in the owner/repository format.</value>
+  </data>
+  <data name="GIT_PROVIDER_INVALID" xml:space="preserve">
+    <value>The Git provider is invalid. Use github or gitlab.</value>
+  </data>
+  <data name="GIT_EVENTS_INVALID" xml:space="preserve">
+    <value>Events must be one or more of: commit, pull_request, merge.</value>
+  </data>
+  <data name="GIT_WEBHOOK_SIGNATURE_INVALID" xml:space="preserve">
+    <value>Invalid webhook signature.</value>
+  </data>
+  <data name="GIT_WEBHOOK_PAYLOAD_INVALID" xml:space="preserve">
+    <value>The webhook payload is invalid.</value>
   </data>
 </root>

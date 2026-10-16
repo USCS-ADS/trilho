@@ -131,5 +131,509 @@ namespace Trilho.Exception {
                 return ResourceManager.GetString("USER_NOT_FOUND", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a this email is already registered.
+        /// </summary>
+        public static string EMAIL_ALREADY_REGISTERED {
+            get {
+                return ResourceManager.GetString("EMAIL_ALREADY_REGISTERED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a the role is invalid.
+        /// </summary>
+        public static string ROLE_INVALID {
+            get {
+                return ResourceManager.GetString("ROLE_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a you do not have permission to perform this action.
+        /// </summary>
+        public static string FORBIDDEN_ACTION {
+            get {
+                return ResourceManager.GetString("FORBIDDEN_ACTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a only administrators can change the role of a user.
+        /// </summary>
+        public static string ONLY_ADMIN_CAN_CHANGE_ROLE {
+            get {
+                return ResourceManager.GetString("ONLY_ADMIN_CAN_CHANGE_ROLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a users can only edit their own profile.
+        /// </summary>
+        public static string USER_CAN_ONLY_EDIT_OWN_PROFILE {
+            get {
+                return ResourceManager.GetString("USER_CAN_ONLY_EDIT_OWN_PROFILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a authentication is required.
+        /// </summary>
+        public static string USER_NOT_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a you cannot delete your own account.
+        /// </summary>
+        public static string CANNOT_DELETE_YOURSELF {
+            get {
+                return ResourceManager.GetString("CANNOT_DELETE_YOURSELF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Team not found..
+        /// </summary>
+        public static string TEAM_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("TEAM_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team name is required..
+        /// </summary>
+        public static string TEAM_NAME_REQUIRED {
+            get {
+                return ResourceManager.GetString("TEAM_NAME_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team name must have at most 100 characters..
+        /// </summary>
+        public static string TEAM_NAME_TOO_LONG {
+            get {
+                return ResourceManager.GetString("TEAM_NAME_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team description must have at most 500 characters..
+        /// </summary>
+        public static string TEAM_DESCRIPTION_TOO_LONG {
+            get {
+                return ResourceManager.GetString("TEAM_DESCRIPTION_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a There is already a team with this name..
+        /// </summary>
+        public static string TEAM_NAME_ALREADY_EXISTS {
+            get {
+                return ResourceManager.GetString("TEAM_NAME_ALREADY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team leader is required..
+        /// </summary>
+        public static string TEAM_LEADER_REQUIRED {
+            get {
+                return ResourceManager.GetString("TEAM_LEADER_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team leader must have the leader or administrator profile..
+        /// </summary>
+        public static string TEAM_LEADER_INVALID_ROLE {
+            get {
+                return ResourceManager.GetString("TEAM_LEADER_INVALID_ROLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This user already leads another team..
+        /// </summary>
+        public static string USER_ALREADY_LEADS_TEAM {
+            get {
+                return ResourceManager.GetString("USER_ALREADY_LEADS_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This user leads a team. Change the team leader first..
+        /// </summary>
+        public static string USER_LEADS_TEAM {
+            get {
+                return ResourceManager.GetString("USER_LEADS_TEAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This user is already a member of the team..
+        /// </summary>
+        public static string USER_ALREADY_TEAM_MEMBER {
+            get {
+                return ResourceManager.GetString("USER_ALREADY_TEAM_MEMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This user is not a member of the team..
+        /// </summary>
+        public static string USER_NOT_TEAM_MEMBER {
+            get {
+                return ResourceManager.GetString("USER_NOT_TEAM_MEMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team leader cannot be removed. Change the leader first..
+        /// </summary>
+        public static string CANNOT_REMOVE_TEAM_LEADER {
+            get {
+                return ResourceManager.GetString("CANNOT_REMOVE_TEAM_LEADER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team is archived..
+        /// </summary>
+        public static string TEAM_ARCHIVED {
+            get {
+                return ResourceManager.GetString("TEAM_ARCHIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team is not archived..
+        /// </summary>
+        public static string TEAM_NOT_ARCHIVED {
+            get {
+                return ResourceManager.GetString("TEAM_NOT_ARCHIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This user is not active..
+        /// </summary>
+        public static string USER_NOT_ACTIVE {
+            get {
+                return ResourceManager.GetString("USER_NOT_ACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The user is required..
+        /// </summary>
+        public static string USER_ID_REQUIRED {
+            get {
+                return ResourceManager.GetString("USER_ID_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Task not found..
+        /// </summary>
+        public static string TASK_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("TASK_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task title is required..
+        /// </summary>
+        public static string TASK_TITLE_REQUIRED {
+            get {
+                return ResourceManager.GetString("TASK_TITLE_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task title must have at most 200 characters..
+        /// </summary>
+        public static string TASK_TITLE_TOO_LONG {
+            get {
+                return ResourceManager.GetString("TASK_TITLE_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task description must have at most 2000 characters..
+        /// </summary>
+        public static string TASK_DESCRIPTION_TOO_LONG {
+            get {
+                return ResourceManager.GetString("TASK_DESCRIPTION_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task team is required..
+        /// </summary>
+        public static string TASK_TEAM_REQUIRED {
+            get {
+                return ResourceManager.GetString("TASK_TEAM_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task status is invalid..
+        /// </summary>
+        public static string TASK_STATUS_INVALID {
+            get {
+                return ResourceManager.GetString("TASK_STATUS_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task priority is invalid..
+        /// </summary>
+        public static string TASK_PRIORITY_INVALID {
+            get {
+                return ResourceManager.GetString("TASK_PRIORITY_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The position in the column is invalid..
+        /// </summary>
+        public static string TASK_POSITION_INVALID {
+            get {
+                return ResourceManager.GetString("TASK_POSITION_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The assignee must be a member of the task team..
+        /// </summary>
+        public static string TASK_ASSIGNEE_NOT_TEAM_MEMBER {
+            get {
+                return ResourceManager.GetString("TASK_ASSIGNEE_NOT_TEAM_MEMBER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task has pending subtasks..
+        /// </summary>
+        public static string TASK_HAS_PENDING_SUBTASKS {
+            get {
+                return ResourceManager.GetString("TASK_HAS_PENDING_SUBTASKS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The task is already done..
+        /// </summary>
+        public static string TASK_IS_DONE {
+            get {
+                return ResourceManager.GetString("TASK_IS_DONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team has tasks. Archive it instead of deleting..
+        /// </summary>
+        public static string TEAM_HAS_TASKS {
+            get {
+                return ResourceManager.GetString("TEAM_HAS_TASKS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Subtask not found..
+        /// </summary>
+        public static string SUBTASK_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("SUBTASK_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The subtask title is required..
+        /// </summary>
+        public static string SUBTASK_TITLE_REQUIRED {
+            get {
+                return ResourceManager.GetString("SUBTASK_TITLE_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The subtask title must have at most 200 characters..
+        /// </summary>
+        public static string SUBTASK_TITLE_TOO_LONG {
+            get {
+                return ResourceManager.GetString("SUBTASK_TITLE_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Comment not found..
+        /// </summary>
+        public static string COMMENT_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("COMMENT_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The comment text is required..
+        /// </summary>
+        public static string COMMENT_BODY_REQUIRED {
+            get {
+                return ResourceManager.GetString("COMMENT_BODY_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The comment must have at most 2000 characters..
+        /// </summary>
+        public static string COMMENT_BODY_TOO_LONG {
+            get {
+                return ResourceManager.GetString("COMMENT_BODY_TOO_LONG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The invitation is invalid or has expired..
+        /// </summary>
+        public static string INVITE_INVALID {
+            get {
+                return ResourceManager.GetString("INVITE_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invitation not found..
+        /// </summary>
+        public static string INVITE_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("INVITE_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a You can only invite members to your team..
+        /// </summary>
+        public static string INVITE_ROLE_NOT_ALLOWED {
+            get {
+                return ResourceManager.GetString("INVITE_ROLE_NOT_ALLOWED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The team of the invitation is required..
+        /// </summary>
+        public static string INVITE_TEAM_REQUIRED {
+            get {
+                return ResourceManager.GetString("INVITE_TEAM_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The invitation token is required..
+        /// </summary>
+        public static string INVITE_TOKEN_REQUIRED {
+            get {
+                return ResourceManager.GetString("INVITE_TOKEN_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The verification code is invalid or has expired..
+        /// </summary>
+        public static string PASSWORD_RESET_CODE_INVALID {
+            get {
+                return ResourceManager.GetString("PASSWORD_RESET_CODE_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The verification code must have 6 digits..
+        /// </summary>
+        public static string PASSWORD_RESET_CODE_REQUIRED {
+            get {
+                return ResourceManager.GetString("PASSWORD_RESET_CODE_REQUIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Notification not found..
+        /// </summary>
+        public static string NOTIFICATION_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("NOTIFICATION_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Repository not found..
+        /// </summary>
+        public static string GIT_REPOSITORY_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("GIT_REPOSITORY_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This repository is already connected..
+        /// </summary>
+        public static string GIT_REPOSITORY_ALREADY_CONNECTED {
+            get {
+                return ResourceManager.GetString("GIT_REPOSITORY_ALREADY_CONNECTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The repository name must be in the owner/repository format..
+        /// </summary>
+        public static string GIT_REPOSITORY_NAME_INVALID {
+            get {
+                return ResourceManager.GetString("GIT_REPOSITORY_NAME_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The Git provider is invalid. Use github or gitlab..
+        /// </summary>
+        public static string GIT_PROVIDER_INVALID {
+            get {
+                return ResourceManager.GetString("GIT_PROVIDER_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Events must be one or more of: commit, pull_request, merge..
+        /// </summary>
+        public static string GIT_EVENTS_INVALID {
+            get {
+                return ResourceManager.GetString("GIT_EVENTS_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid webhook signature..
+        /// </summary>
+        public static string GIT_WEBHOOK_SIGNATURE_INVALID {
+            get {
+                return ResourceManager.GetString("GIT_WEBHOOK_SIGNATURE_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The webhook payload is invalid..
+        /// </summary>
+        public static string GIT_WEBHOOK_PAYLOAD_INVALID {
+            get {
+                return ResourceManager.GetString("GIT_WEBHOOK_PAYLOAD_INVALID", resourceCulture);
+            }
+        }
     }
 }

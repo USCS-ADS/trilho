@@ -1,4 +1,4 @@
-﻿using Trilho.Communication.Requests.Users;
+using Trilho.Communication.Requests.Users;
 using Trilho.Communication.Responses.Users;
 using Trilho.Domain.Repositories.Users;
 using Trilho.Domain.Security.Cryptography;
@@ -21,9 +21,9 @@ public class LoginUseCase : ILoginUseCase
 
     public async Task<ResponseUserLoginJson> Execute(RequestUserLoginJson request)
     {
-        var user = await _repository.GetUserByEmail(request.Email);
+        var user = await _repository.GetUserByEmail(request.Email.Trim().ToLowerInvariant());
 
-        if (user is null)
+        if (user is null || user.IsActive == false)
         {
             throw new InvalidLoginException();
         }

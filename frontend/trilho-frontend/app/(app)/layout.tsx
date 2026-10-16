@@ -1,10 +1,21 @@
-import { Sidebar } from "../components/sidebar";
+import { AppShell } from "../components/app-shell";
+import { CurrentUserProvider } from "../components/current-user";
+import { getCurrentUser } from "../lib/session/dal";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  // Verifica a sessão (redireciona ao /login se inválida) e carrega o usuário.
+  const user = await getCurrentUser();
+
   return (
-    <div className="flex min-h-screen bg-trilho-bg">
-      <Sidebar />
-      <div className="flex-1">{children}</div>
-    </div>
+    <CurrentUserProvider
+      user={{
+        name: user.name,
+        initials: user.initials,
+        email: user.email,
+        isAdmin: user.role === "admin",
+      }}
+    >
+      <AppShell>{children}</AppShell>
+    </CurrentUserProvider>
   );
 }

@@ -1,6 +1,348 @@
-﻿@Trilho.Api_HostAddress = http://localhost:5018
+@Trilho.Api_HostAddress = http://localhost:5018
 
-GET {{Trilho.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Login (anônimo) — copie o "token" da resposta para a variável abaixo
+POST {{Trilho.Api_HostAddress}}/api/Auth
+Content-Type: application/json
+Accept-Language: pt-BR
+
+{
+  "email": "admin@trilho.local",
+  "password": "troque-esta-senha"
+}
 
 ###
+@token = cole-o-token-aqui
+
+### Usuário logado
+GET {{Trilho.Api_HostAddress}}/api/Auth/me
+Authorization: Bearer {{token}}
+
+### Listar usuários (líder ou administrador)
+GET {{Trilho.Api_HostAddress}}/api/User
+Authorization: Bearer {{token}}
+
+### Criar usuário (somente administrador). Perfis: administrador | lider | user
+POST {{Trilho.Api_HostAddress}}/api/User
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Maria Souza",
+  "email": "maria@trilho.local",
+  "password": "Senha@123",
+  "role": "user"
+}
+
+### Atualizar usuário (próprio perfil, ou qualquer um se administrador)
+PUT {{Trilho.Api_HostAddress}}/api/User/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Maria Souza",
+  "email": "maria@trilho.local",
+  "password": "",
+  "role": "lider"
+}
+
+### Remover usuário (somente administrador)
+DELETE {{Trilho.Api_HostAddress}}/api/User/2
+Authorization: Bearer {{token}}
+
+### Times — criar (admin). O líder precisa ter perfil lider/administrador e liderar no máximo um time ativo
+POST {{Trilho.Api_HostAddress}}/api/Team
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Backend",
+  "description": "APIs e regras de negócio",
+  "leaderId": 2
+}
+
+### Times — listar (admin vê todos; demais veem os próprios). ?includeArchived=true inclui arquivados
+GET {{Trilho.Api_HostAddress}}/api/Team
+Authorization: Bearer {{token}}
+
+### Times — detalhe
+GET {{Trilho.Api_HostAddress}}/api/Team/1
+Authorization: Bearer {{token}}
+
+### Times — editar nome/descrição (admin ou líder do time)
+PUT {{Trilho.Api_HostAddress}}/api/Team/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Backend",
+  "description": "Nova descrição"
+}
+
+### Times — trocar líder (admin)
+PUT {{Trilho.Api_HostAddress}}/api/Team/1/leader
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leaderId": 3
+}
+
+### Times — adicionar membro (admin ou líder do time)
+POST {{Trilho.Api_HostAddress}}/api/Team/1/member
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userId": 4
+}
+
+### Times — remover membro (não remove o líder)
+DELETE {{Trilho.Api_HostAddress}}/api/Team/1/member/4
+Authorization: Bearer {{token}}
+
+### Times — arquivar / restaurar / excluir (admin)
+POST {{Trilho.Api_HostAddress}}/api/Team/1/archive
+Authorization: Bearer {{token}}
+
+###
+POST {{Trilho.Api_HostAddress}}/api/Team/1/restore
+Authorization: Bearer {{token}}
+
+###
+DELETE {{Trilho.Api_HostAddress}}/api/Team/1
+Authorization: Bearer {{token}}
+
+### Tarefas — criar (membro do time). status opcional (padrão backlog). Prioridade: low | medium | high | urgent
+POST {{Trilho.Api_HostAddress}}/api/Task
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Criar endpoint de relatórios",
+  "description": "Exportar CSV e PDF",
+  "teamId": 1,
+  "assigneeId": 1,
+  "dueDate": "2026-10-30",
+  "priority": "high"
+}
+
+### Tarefas — quadro Kanban (filtros opcionais: teamId, assigneeId, status, priority)
+GET {{Trilho.Api_HostAddress}}/api/Task?teamId=1
+Authorization: Bearer {{token}}
+
+### Tarefas — detalhe (subtarefas, comentários, progresso)
+GET {{Trilho.Api_HostAddress}}/api/Task/1
+Authorization: Bearer {{token}}
+
+### Tarefas — editar (não altera o status)
+PUT {{Trilho.Api_HostAddress}}/api/Task/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Criar endpoint de relatórios",
+  "description": "Exportar CSV e PDF",
+  "assigneeId": 1,
+  "dueDate": "2026-11-05",
+  "priority": "urgent"
+}
+
+### Tarefas — mover de coluna/posição. status: backlog | todo | in-progress | in-review | done
+PUT {{Trilho.Api_HostAddress}}/api/Task/1/move
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "in-progress",
+  "position": 0
+}
+
+### Tarefas — histórico
+GET {{Trilho.Api_HostAddress}}/api/Task/1/activity
+Authorization: Bearer {{token}}
+
+### Subtarefas — criar / atualizar / remover
+POST {{Trilho.Api_HostAddress}}/api/Task/1/subtask
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Escrever testes"
+}
+
+###
+PUT {{Trilho.Api_HostAddress}}/api/Task/1/subtask/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Escrever testes",
+  "isDone": true
+}
+
+###
+DELETE {{Trilho.Api_HostAddress}}/api/Task/1/subtask/1
+Authorization: Bearer {{token}}
+
+### Comentários — criar / remover
+POST {{Trilho.Api_HostAddress}}/api/Task/1/comment
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "body": "Vamos priorizar esta."
+}
+
+###
+DELETE {{Trilho.Api_HostAddress}}/api/Task/1/comment/1
+Authorization: Bearer {{token}}
+
+### Tarefas — excluir (administrador ou líder do time)
+DELETE {{Trilho.Api_HostAddress}}/api/Task/1
+Authorization: Bearer {{token}}
+
+### Convites — criar/reenviar (admin; líder só para o próprio time e perfil user). O link segue por e-mail (em dev, veja o log da API)
+POST {{Trilho.Api_HostAddress}}/api/Invite
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "convidada@trilho.local",
+  "fullName": "Maria Convidada",
+  "teamId": 1,
+  "role": "user"
+}
+
+### Convites — pendentes / cancelar
+GET {{Trilho.Api_HostAddress}}/api/Invite
+Authorization: Bearer {{token}}
+
+###
+DELETE {{Trilho.Api_HostAddress}}/api/Invite/1
+Authorization: Bearer {{token}}
+
+### Convites — dados para a tela de ativação (anônimo)
+POST {{Trilho.Api_HostAddress}}/api/Invite/lookup
+Content-Type: application/json
+
+{
+  "token": "cole-o-token-do-link"
+}
+
+### Convites — ativar conta (anônimo): cria o usuário e o coloca no time
+POST {{Trilho.Api_HostAddress}}/api/Invite/accept
+Content-Type: application/json
+
+{
+  "token": "cole-o-token-do-link",
+  "fullName": "Maria Convidada",
+  "password": "Senha@123"
+}
+
+### Redefinir senha (anônimo) — 1) pedir código
+POST {{Trilho.Api_HostAddress}}/api/PasswordReset/request
+Content-Type: application/json
+
+{
+  "email": "convidada@trilho.local"
+}
+
+### Redefinir senha — 2) conferir o código (não consome)
+POST {{Trilho.Api_HostAddress}}/api/PasswordReset/verify
+Content-Type: application/json
+
+{
+  "email": "convidada@trilho.local",
+  "code": "123456"
+}
+
+### Redefinir senha — 3) definir a nova senha (consome o código)
+POST {{Trilho.Api_HostAddress}}/api/PasswordReset/confirm
+Content-Type: application/json
+
+{
+  "email": "convidada@trilho.local",
+  "code": "123456",
+  "newPassword": "NovaSenha@123"
+}
+
+### Dashboard consolidado (admin: todos os times; líder: os que lidera)
+GET {{Trilho.Api_HostAddress}}/api/Dashboard
+Authorization: Bearer {{token}}
+
+### Notificações do usuário logado (?unreadOnly=true&limit=50)
+GET {{Trilho.Api_HostAddress}}/api/Notification
+Authorization: Bearer {{token}}
+
+###
+PUT {{Trilho.Api_HostAddress}}/api/Notification/1/read
+Authorization: Bearer {{token}}
+
+###
+PUT {{Trilho.Api_HostAddress}}/api/Notification/read-all
+Authorization: Bearer {{token}}
+
+### IA — ranking de priorização do time (urgente declarada sempre no topo; justificativa em texto)
+GET {{Trilho.Api_HostAddress}}/api/Prioritization/ranking?teamId=1
+Authorization: Bearer {{token}}
+
+### IA — sugestão para nova tarefa (prioridade pelo prazo + responsável com menos tarefas em aberto)
+POST {{Trilho.Api_HostAddress}}/api/Prioritization/suggest
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "teamId": 1,
+  "dueDate": "2026-10-20"
+}
+
+### IA — aplicar prioridades sugeridas às tarefas em aberto (líder do time ou admin)
+POST {{Trilho.Api_HostAddress}}/api/Prioritization/apply
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "teamId": 1
+}
+
+### Git — conectar repositório (admin ou líder do time). O segredo do webhook só aparece nesta resposta
+POST {{Trilho.Api_HostAddress}}/api/GitRepository
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "provider": "github",
+  "fullName": "trilho/backend",
+  "teamId": 1,
+  "events": [ "commit", "pull_request", "merge" ]
+}
+
+### Git — listar / alterar eventos / reprocessar fila / desconectar
+GET {{Trilho.Api_HostAddress}}/api/GitRepository
+Authorization: Bearer {{token}}
+
+###
+PUT {{Trilho.Api_HostAddress}}/api/GitRepository/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "events": [ "pull_request", "merge" ]
+}
+
+###
+POST {{Trilho.Api_HostAddress}}/api/GitRepository/1/retry
+Authorization: Bearer {{token}}
+
+###
+DELETE {{Trilho.Api_HostAddress}}/api/GitRepository/1
+Authorization: Bearer {{token}}
+
+### Git — webhook (chamado pelo GitHub/GitLab; anônimo, protegido por HMAC/token do repositório)
+# GitHub: Payload URL = <API>/api/GitWebhook/{id}, Content type = application/json,
+#         Secret = o webhookSecret devolvido na conexão, eventos: Pushes e Pull requests.
+# GitLab: URL igual; Secret token = webhookSecret; gatilhos: Push events e Merge request events.
+# Convenção: cite #128, task-128 ou trilho-128 na branch, no título/descrição do PR ou no commit.
+
+### Health check (anônimo)
+GET {{Trilho.Api_HostAddress}}/health

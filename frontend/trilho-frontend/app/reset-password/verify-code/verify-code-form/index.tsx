@@ -1,12 +1,17 @@
 "use client";
 
 import { Button } from "@/app/components/button";
+import { useFormValidation } from "@/app/lib/validation/use-form-validation";
+import { useRouter } from "next/navigation";
 import { FormEvent, KeyboardEvent, useRef } from "react";
+import { verifyCodeSchema } from "../../schema";
 
 const CODE_LENGTH = 6;
 
 export function VerifyCodeForm() {
+    const router = useRouter();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+    const { errors, validateValues, clearError } = useFormValidation(verifyCodeSchema);
 
     function focusInput(index: number) {
         inputsRef.current[index]?.focus();
@@ -16,6 +21,7 @@ export function VerifyCodeForm() {
         const digit = value.replace(/\D/g, "").slice(-1);
         const input = inputsRef.current[index];
         if (input) input.value = digit;
+        clearError("code");
 
         if (digit && index < CODE_LENGTH - 1) {
             focusInput(index + 1);
@@ -30,7 +36,13 @@ export function VerifyCodeForm() {
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        // TODO: validar com zod e chamar a API de confirmação do código
+
+        const code = inputsRef.current.map((input) => input?.value ?? "").join("");
+        const data = validateValues({ code });
+        if (!data) return;
+
+        // TODO: chamar a API de confirmação do código — endpoint ainda não existe.
+        router.push("/reset-password/new-password");
     }
 
     function handleResendCode() {
@@ -38,8 +50,13 @@ export function VerifyCodeForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="mb-6 flex gap-2">
+        <form onSubmit={handleSubmit} noValidate>
+            <div
+                role="group"
+                aria-label="Código de verificação"
+                aria-describedby={errors.code ? "code-error" : undefined}
+                className="mb-2 flex gap-2"
+            >
                 {Array.from({ length: CODE_LENGTH }, (_, index) => index).map((index) => (
                     <input
                         key={index}
@@ -50,14 +67,25 @@ export function VerifyCodeForm() {
                         inputMode="numeric"
                         maxLength={1}
                         aria-label={`Dígito ${index + 1} do código`}
-                        className="h-12 w-12 rounded-lg border border-trilho-border bg-trilho-surface-2 text-center text-lg text-trilho-text focus:border-trilho-accent focus:outline-none"
+                        aria-invalid={errors.code ? true : undefined}
+                        className={`h-12 w-12 rounded-lg border bg-trilho-surface-2 text-center text-lg text-trilho-text focus:outline-none ${
+                            errors.code
+                                ? "border-trilho-danger focus:border-trilho-danger"
+                                : "border-trilho-border focus:border-trilho-accent"
+                        }`}
                         onChange={(event) => handleChange(index, event.target.value)}
                         onKeyDown={(event) => handleKeyDown(index, event)}
                     />
                 ))}
             </div>
 
-            <p className="mb-6 text-sm text-trilho-dim">
+            {errors.code && (
+                <p id="code-error" role="alert" className="mb-2 text-xs text-trilho-danger">
+                    {errors.code}
+                </p>
+            )}
+
+            <p className="mb-6 mt-4 text-sm text-trilho-dim">
                 Não recebeu?{" "}
                 <button
                     type="button"

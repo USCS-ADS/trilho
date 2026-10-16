@@ -1,7 +1,12 @@
+import { isMockMode } from "@/app/lib/api/config";
 import { AuthPanel } from "../components/auth-panel";
 import { LoginForm } from "./login-form";
 
 export default function LoginPage() {
+  const demoHint = isMockMode
+    ? "Modo demonstração (sem backend): entre com camila.duarte@exemplo.com e qualquer senha."
+    : undefined;
+
   return (
     <main className="flex min-h-screen flex-col bg-trilho-bg md:flex-row">
       <AuthPanel
@@ -18,7 +23,7 @@ export default function LoginPage() {
             Entre com sua conta para continuar
           </p>
 
-          <LoginForm />
+          <LoginForm demoHint={demoHint} />
         </div>
       </section>
     </main>

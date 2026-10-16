@@ -1,16 +1,6 @@
+import { Badge } from "@/app/components/badge";
 import { Logo } from "@/app/components/logo";
-import {
-    CardTagTone,
-    KANBAN_COLUMNS,
-    SIDEBAR_NAV_ITEMS,
-} from "./mock-data";
-
-const TAG_TONE_CLASSES: Record<CardTagTone, string> = {
-    priority: "bg-trilho-surface-3 text-trilho-text",
-    info: "bg-trilho-surface-3 text-trilho-text",
-    success: "bg-trilho-success/15 text-trilho-success",
-    ai: "bg-trilho-accent/15 text-trilho-accent",
-};
+import { KANBAN_COLUMNS, SIDEBAR_NAV_ITEMS } from "./mock-data";
 
 /** Print ilustrativo do produto (quadro Kanban), exibido na hero da landing page. */
 export function ProductPreview() {
@@ -69,11 +59,9 @@ export function ProductPreview() {
                                         >
                                             <p className="mb-2 leading-snug">{card.title}</p>
                                             <div className="flex items-center justify-between">
-                                                <span
-                                                    className={`rounded px-1.5 py-0.5 text-[10px] ${TAG_TONE_CLASSES[card.tag.tone]}`}
-                                                >
+                                                <Badge tone={card.tag.tone} size="xs">
                                                     {card.tag.label}
-                                                </span>
+                                                </Badge>
                                                 {card.assigneeInitials && (
                                                     <span className="text-[10px] text-trilho-dim">
                                                         {card.assigneeInitials}

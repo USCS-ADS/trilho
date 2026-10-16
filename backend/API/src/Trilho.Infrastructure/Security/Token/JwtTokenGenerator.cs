@@ -1,4 +1,4 @@
-﻿using Trilho.Domain.Entities;
+using Trilho.Domain.Entities;
 using Trilho.Domain.Security.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -10,11 +10,15 @@ internal class JwtTokenGenerator : IAcessTokenGenerator
 {
     private readonly uint _expirationTimeMinutes;
     private readonly string _signingKey;
+    private readonly string _issuer;
+    private readonly string _audience;
 
-    public JwtTokenGenerator(uint expirationTimeMinutes, string signingKey)
+    public JwtTokenGenerator(uint expirationTimeMinutes, string signingKey, string issuer, string audience)
     {
         _expirationTimeMinutes = expirationTimeMinutes;
         _signingKey = signingKey;
+        _issuer = issuer;
+        _audience = audience;
     }
     public string Generate(User user)
     {
@@ -22,11 +26,15 @@ internal class JwtTokenGenerator : IAcessTokenGenerator
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Sid, user.UserId.ToString())
+            new Claim(ClaimTypes.Sid, user.UserId.ToString()),
+            new Claim(TokenClaims.UserId, user.Id.ToString()),
+            new Claim(TokenClaims.Role, user.Role)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Issuer = _issuer,
+            Audience = _audience,
             Expires = DateTime.UtcNow.AddMinutes(_expirationTimeMinutes),
             SigningCredentials = new SigningCredentials(SecurityKey(), SecurityAlgorithms.HmacSha256Signature),
             Subject = new ClaimsIdentity(claims)

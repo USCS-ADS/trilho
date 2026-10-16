@@ -1,0 +1,133 @@
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
+using CommonTestUtilities.Requests;
+using Trilho.Communication.Requests.Users;
+using Trilho.Communication.Responses.Users;
+using Trilho.Domain.Enum;
+
+namespace WebApi.Test.Users;
+public class UserEndpointsTests : IClassFixture<TrilhoWebApplicationFactory>
+{
+    private readonly TrilhoWebApplicationFactory _factory;
+
+    public UserEndpointsTests(TrilhoWebApplicationFactory factory)
+    {
+        _factory = factory;
+    }
+
+    private async Task<HttpClient> ClientAs(string? email)
+    {
+        await _factory.EnsureSeeded();
+
+        var client = _factory.CreateClient();
+
+        if (email is not null)
+        {
+            var response = await client.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = email, Password = TrilhoWebApplicationFactory.Password });
+            response.EnsureSuccessStatusCode();
+
+            var login = await response.Content.ReadFromJsonAsync<ResponseUserLoginJson>();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", login!.Token);
+        }
+
+        return client;
+    }
+
+    [Fact]
+    public async Task Login_ReturnsOk()
+    {
+        var client = await ClientAs(null);
+
+        var response = await client.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = TrilhoWebApplicationFactory.AdminEmail, Password = TrilhoWebApplicationFactory.Password });
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_WrongPassword_ReturnsUnauthorized()
+    {
+        var client = await ClientAs(null);
+
+        var response = await client.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = TrilhoWebApplicationFactory.AdminEmail, Password = "wrong" });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAll_WithoutToken_ReturnsUnauthorized()
+    {
+        var client = await ClientAs(null);
+
+        var response = await client.GetAsync("api/User");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAll_AsMember_ReturnsForbidden()
+    {
+        var client = await ClientAs(TrilhoWebApplicationFactory.MemberEmail);
+
+        var response = await client.GetAsync("api/User");
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAll_AsAdmin_ReturnsOk()
+    {
+        var client = await ClientAs(TrilhoWebApplicationFactory.AdminEmail);
+
+        var response = await client.GetAsync("api/User");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Me_ReturnsLoggedUser_ResolvedFromIdClaim()
+    {
+        var client = await ClientAs(TrilhoWebApplicationFactory.MemberEmail);
+
+        var response = await client.GetAsync("api/Auth/me");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.Equal(TrilhoWebApplicationFactory.MemberEmail, body.RootElement.GetProperty("email").GetString());
+    }
+
+    [Fact]
+    public async Task Create_AsMember_ReturnsForbidden()
+    {
+        var client = await ClientAs(TrilhoWebApplicationFactory.MemberEmail);
+
+        var response = await client.PostAsJsonAsync("api/User", RequestUserJsonBuilder.Build());
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Create_AsAdmin_ReturnsCreated_AndDuplicateEmailIsRejected()
+    {
+        var client = await ClientAs(TrilhoWebApplicationFactory.AdminEmail);
+        var request = RequestUserJsonBuilder.Build(Roles.LEADER);
+
+        var first = await client.PostAsJsonAsync("api/User", request);
+        var second = await client.PostAsJsonAsync("api/User", request);
+
+        Assert.Equal(HttpStatusCode.Created, first.StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, second.StatusCode);
+    }
+
+    [Fact]
+    public async Task Health_IsAnonymous()
+    {
+        var client = await ClientAs(null);
+
+        var response = await client.GetAsync("health");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+}

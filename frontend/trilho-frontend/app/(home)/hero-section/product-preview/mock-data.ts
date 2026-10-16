@@ -3,11 +3,11 @@
  * dado real de nenhum usuário, só uma amostra representativa do quadro Kanban.
  */
 
-export type CardTagTone = "priority" | "info" | "success" | "ai";
+import type { BadgeTone } from "@/app/components/badge";
 
 export interface KanbanCard {
     title: string;
-    tag: { label: string; tone: CardTagTone };
+    tag: { label: string; tone: BadgeTone };
     assigneeInitials?: string;
 }
 
@@ -31,12 +31,12 @@ export const KANBAN_COLUMNS: KanbanColumn[] = [
         cards: [
             {
                 title: "Implementar filtro por prioridade",
-                tag: { label: "P1", tone: "priority" },
+                tag: { label: "P1", tone: "info" },
                 assigneeInitials: "AL",
             },
             {
                 title: "Adicionar webhook de merge",
-                tag: { label: "P2", tone: "priority" },
+                tag: { label: "P2", tone: "info" },
                 assigneeInitials: "JP",
             },
         ],
