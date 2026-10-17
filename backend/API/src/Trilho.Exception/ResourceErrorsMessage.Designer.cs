@@ -213,6 +213,12 @@ namespace Trilho.Exception {
             }
         }
         
+        public static string LOGIN_LOCKED {
+            get {
+                return ResourceManager.GetString("LOGIN_LOCKED", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Team not found..
         /// </summary>

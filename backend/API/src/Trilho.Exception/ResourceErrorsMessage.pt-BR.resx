@@ -318,4 +318,7 @@
   <data name="CANNOT_DEACTIVATE_YOURSELF" xml:space="preserve">
     <value>você não pode desativar a própria conta</value>
   </data>
+  <data name="LOGIN_LOCKED" xml:space="preserve">
+    <value>Muitas tentativas de login malsucedidas. Tente novamente em alguns minutos ou redefina a senha.</value>
+  </data>
 </root>
