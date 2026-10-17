@@ -2,9 +2,20 @@
 
 import { isMockMode } from "@/app/lib/api/config";
 import { toUserMessage } from "@/app/lib/api/errors";
-import { createComment, createSubtask, updateSubtask } from "@/app/lib/api/tasks";
+import {
+    createComment,
+    createSubtask,
+    deleteComment,
+    deleteSubtask,
+    deleteTask,
+    updateSubtask,
+    updateTask,
+} from "@/app/lib/api/tasks";
 import { verifySession } from "@/app/lib/session/dal";
+import { validate } from "@/app/lib/validation";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { editTaskSchema } from "./edit-task-modal/schema";
 
 export type SubtaskCreated =
     | { ok: true; subtask?: { id: string; title: string; done: boolean } }
@@ -74,6 +85,76 @@ export async function createCommentAction(taskId: string, body: string): Promise
         const comment = await createComment(taskId, clean, session.token);
         revalidatePath(`/kanban/${taskId}`);
         return { ok: true, comment };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+}
+
+const DEMO_MESSAGE = "Esta ação exige a API ligada (o modo demonstração é somente leitura).";
+
+function revalidateTask(taskId: string) {
+    revalidatePath(`/kanban/${taskId}`);
+    revalidatePath("/kanban");
+}
+
+export async function updateTaskAction(taskId: string, input: unknown): Promise<SimpleResult> {
+    const session = await verifySession();
+
+    const result = validate(editTaskSchema, input);
+    if (!result.success) return { ok: false, message: Object.values(result.errors)[0] };
+
+    if (isMockMode) return { ok: false, message: DEMO_MESSAGE };
+
+    try {
+        await updateTask(taskId, result.data, session.token);
+        revalidateTask(taskId);
+        return { ok: true };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+}
+
+/** Exclui a tarefa (administrador/líder do time, regra da API) e volta ao quadro do time. */
+export async function deleteTaskAction(taskId: string, teamId: string): Promise<SimpleResult> {
+    const session = await verifySession();
+
+    if (isMockMode) return { ok: false, message: DEMO_MESSAGE };
+
+    try {
+        await deleteTask(taskId, session.token);
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+
+    revalidatePath("/kanban");
+    revalidatePath("/times");
+    // `redirect` lança internamente; por isso fica fora do try/catch.
+    redirect(`/kanban?team=${encodeURIComponent(teamId)}`);
+}
+
+export async function deleteSubtaskAction(taskId: string, subtaskId: string): Promise<SimpleResult> {
+    const session = await verifySession();
+
+    if (isMockMode || subtaskId.startsWith("local-")) return { ok: true };
+
+    try {
+        await deleteSubtask(taskId, subtaskId, session.token);
+        revalidateTask(taskId);
+        return { ok: true };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+}
+
+export async function deleteCommentAction(taskId: string, commentId: string): Promise<SimpleResult> {
+    const session = await verifySession();
+
+    if (isMockMode || commentId.startsWith("local-")) return { ok: true };
+
+    try {
+        await deleteComment(taskId, commentId, session.token);
+        revalidateTask(taskId);
+        return { ok: true };
     } catch (error) {
         return { ok: false, message: toUserMessage(error) };
     }
