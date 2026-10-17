@@ -6,6 +6,10 @@ public interface IAuthFlowSettings
     int PasswordResetExpiresMinutes { get; }
     int PasswordResetMaxAttempts { get; }
 
+    /// <summary>Senhas erradas seguidas que bloqueiam a conta.</summary>
+    int LoginMaxFailedAttempts { get; }
+    int LoginLockoutMinutes { get; }
+
     /// <summary>Link da tela de ativação de conta, com o token do convite.</summary>
     string BuildActivationLink(string token);
 }

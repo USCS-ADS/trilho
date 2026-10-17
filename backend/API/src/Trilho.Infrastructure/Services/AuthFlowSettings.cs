@@ -11,12 +11,16 @@ internal class AuthFlowSettings : IAuthFlowSettings
         InviteExpiresDays = configuration.GetValue<int?>("Settings:Invite:ExpiresDays") ?? 7;
         PasswordResetExpiresMinutes = configuration.GetValue<int?>("Settings:PasswordReset:ExpiresMinutes") ?? 15;
         PasswordResetMaxAttempts = configuration.GetValue<int?>("Settings:PasswordReset:MaxAttempts") ?? 5;
+        LoginMaxFailedAttempts = Math.Max(1, configuration.GetValue<int?>("Settings:Login:MaxFailedAttempts") ?? 5);
+        LoginLockoutMinutes = Math.Max(1, configuration.GetValue<int?>("Settings:Login:LockoutMinutes") ?? 15);
         _frontendBaseUrl = (configuration.GetValue<string>("Settings:FrontendBaseUrl") ?? "http://localhost:3000").TrimEnd('/');
     }
 
     public int InviteExpiresDays { get; }
     public int PasswordResetExpiresMinutes { get; }
     public int PasswordResetMaxAttempts { get; }
+    public int LoginMaxFailedAttempts { get; }
+    public int LoginLockoutMinutes { get; }
 
     public string BuildActivationLink(string token)
     {

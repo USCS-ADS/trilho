@@ -214,6 +214,66 @@ public class UserEndpointsTests : IClassFixture<TrilhoWebApplicationFactory>
     }
 
     [Fact]
+    public async Task Login_AfterTooManyWrongPasswords_LocksTheAccount_EvenForTheRightPassword()
+    {
+        var (_, user, _) = await CreateUser();
+        var anonymous = _factory.CreateClient();
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            var wrong = await anonymous.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = "Errada@1234" });
+            Assert.Equal(HttpStatusCode.Unauthorized, wrong.StatusCode);
+        }
+
+        var locked = await anonymous.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = user.Password });
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, locked.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_Lockout_DoesNotAffectOtherAccounts_AndASuccessResetsTheCounter()
+    {
+        var (_, user, _) = await CreateUser();
+        var anonymous = _factory.CreateClient();
+
+        for (var attempt = 0; attempt < 4; attempt++)
+        {
+            await anonymous.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = "Errada@1234" });
+        }
+
+        // O acerto zera o contador: mais 4 erros ainda não bloqueiam.
+        await Login(user.Email, user.Password);
+
+        for (var attempt = 0; attempt < 4; attempt++)
+        {
+            var wrong = await anonymous.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = "Errada@1234" });
+            Assert.Equal(HttpStatusCode.Unauthorized, wrong.StatusCode);
+        }
+
+        await Login(TrilhoWebApplicationFactory.AdminEmail, TrilhoWebApplicationFactory.Password);
+    }
+
+    [Fact]
+    public async Task Login_Lockout_IsClearedByAPasswordReset()
+    {
+        var (_, user, _) = await CreateUser();
+        var anonymous = _factory.CreateClient();
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            await anonymous.PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = "Errada@1234" });
+        }
+
+        await anonymous.PostAsJsonAsync("api/PasswordReset/request", new Trilho.Communication.Requests.PasswordReset.RequestPasswordResetJson { Email = user.Email });
+        var code = _factory.Emails.ResetCodeFor(user.Email);
+
+        var confirm = await anonymous.PostAsJsonAsync("api/PasswordReset/confirm", new Trilho.Communication.Requests.PasswordReset.RequestConfirmPasswordResetJson { Email = user.Email, Code = code, NewPassword = "Redefinida@2026" });
+        Assert.Equal(HttpStatusCode.NoContent, confirm.StatusCode);
+
+        await Login(user.Email, "Redefinida@2026");
+    }
+
+    [Fact]
     public async Task Health_IsAnonymous()
     {
         var client = await ClientAs(null);

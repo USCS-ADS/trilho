@@ -240,6 +240,7 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 | `Settings:FrontendBaseUrl`                    | Base dos links enviados por e-mail (ex: ativação de conta)  |
 | `Settings:Invite:ExpiresDays`                 | Validade do convite, em dias (padrão 7)                   |
 | `Settings:PasswordReset:{ExpiresMinutes,MaxAttempts}` | Validade (15 min) e tentativas (5) do código       |
+| `Settings:Login:{MaxFailedAttempts,LockoutMinutes}` | Senhas erradas seguidas que bloqueiam a conta (5) e por quantos minutos (15); a resposta é 429. Redefinir a senha destrava |
 | `Settings:Email:Provider`                    | `Log` (padrão: só registra no log) ou `Smtp` (envio real)  |
 | `Settings:Email:Smtp:{Host,Port,UserName,Password,EnableSsl,FromAddress,FromName}` | Servidor SMTP; senha via user-secrets/variável de ambiente |
 | `Settings:Email:LogBody`                      | Em dev, registra o corpo do e-mail (link/código) no log   |
