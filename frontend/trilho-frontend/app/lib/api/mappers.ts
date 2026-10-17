@@ -61,6 +61,7 @@ export function teamFromApi(dto: ResponseTeamJson): TeamWithMembers {
         members,
         tasksInProgress: dto.openTasks,
         workload: dto.workloadPercent,
+        isArchived: dto.isArchived,
     };
 }
 

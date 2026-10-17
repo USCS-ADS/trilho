@@ -3,9 +3,11 @@
 import { Button } from "@/app/components/button";
 import { PlusIcon } from "@/app/components/icons";
 import { PageHeader } from "@/app/components/page-header";
+import type { UserRole } from "@/app/lib/teams/roles";
 import type { NewTeamInput, TeamWithMembers, User } from "@/app/lib/teams/types";
 import { useState } from "react";
 import { createTeamAction } from "../actions";
+import { ManageTeamModal } from "../manage-team-modal";
 import { NewTeamModal } from "../new-team-modal";
 import { TeamCard } from "../team-card";
 
@@ -14,20 +16,39 @@ interface TeamsWorkspaceProps {
     users: User[];
     /** RF02: só administradores criam times. */
     canCreateTeam: boolean;
+    /** Quem está logado: o administrador gerencia tudo; o líder, só os times que lidera. */
+    currentUser: { id: string; role: UserRole };
     loadError?: string;
 }
 
 /** Estado compartilhado entre o botão do cabeçalho, o modal de novo time e a lista. */
-export function TeamsWorkspace({ initialTeams, users, canCreateTeam, loadError }: TeamsWorkspaceProps) {
+export function TeamsWorkspace({
+    initialTeams,
+    users,
+    canCreateTeam,
+    currentUser,
+    loadError,
+}: TeamsWorkspaceProps) {
     const [teams, setTeams] = useState(initialTeams);
     const [isNewTeamOpen, setIsNewTeamOpen] = useState(false);
+    const [managingId, setManagingId] = useState<string>();
 
-    // RF02: só quem tem perfil de líder/administrador e ainda não lidera um time pode liderar outro.
+    const isAdmin = currentUser.role === "admin";
+    const activeTeams = teams.filter((team) => !team.isArchived);
+    const managing = teams.find((team) => team.id === managingId);
+
+    // RF02: só quem tem perfil de líder/administrador e ainda não lidera um time ativo pode liderar outro.
     const leaderCandidates = users.filter(
         (user) =>
             (user.role === "leader" || user.role === "admin") &&
-            !teams.some((team) => team.leaderId === user.id),
+            !activeTeams.some((team) => team.leaderId === user.id),
     );
+
+    /** Para trocar o líder de um time: os mesmos critérios, mais o líder atual sai da lista. */
+    const leaderCandidatesFor = (team: TeamWithMembers) =>
+        leaderCandidates.filter((user) => user.id !== team.leaderId);
+
+    const canManage = (team: TeamWithMembers) => isAdmin || team.leaderId === currentUser.id;
 
     /** Devolve a mensagem de erro (ou `undefined` se criou) para o modal exibir. */
     async function handleCreateTeam(input: NewTeamInput): Promise<string | undefined> {
@@ -38,11 +59,15 @@ export function TeamsWorkspace({ initialTeams, users, canCreateTeam, loadError }
         return undefined;
     }
 
+    function replaceTeam(updated: TeamWithMembers) {
+        setTeams((previous) => previous.map((team) => (team.id === updated.id ? updated : team)));
+    }
+
     return (
         <>
             <PageHeader
                 title="Times"
-                description={`${teams.length} ${teams.length === 1 ? "time ativo" : "times ativos"}`}
+                description={`${activeTeams.length} ${activeTeams.length === 1 ? "time ativo" : "times ativos"}`}
                 actions={
                     canCreateTeam ? (
                         <Button
@@ -77,10 +102,27 @@ export function TeamsWorkspace({ initialTeams, users, canCreateTeam, loadError }
                     <TeamCard
                         key={team.id}
                         team={team}
-                        leaderName={users.find((user) => user.id === team.leaderId)?.name ?? "—"}
+                        leaderName={
+                            team.members.find((member) => member.id === team.leaderId)?.name ??
+                            users.find((user) => user.id === team.leaderId)?.name ??
+                            "—"
+                        }
+                        onManage={canManage(team) ? () => setManagingId(team.id) : undefined}
                     />
                 ))}
             </div>
+
+            <ManageTeamModal
+                team={managing}
+                users={users}
+                leaderCandidates={managing ? leaderCandidatesFor(managing) : []}
+                isAdmin={isAdmin}
+                onClose={() => setManagingId(undefined)}
+                onChanged={replaceTeam}
+                onDeleted={(teamId) =>
+                    setTeams((previous) => previous.filter((team) => team.id !== teamId))
+                }
+            />
 
             <NewTeamModal
                 open={isNewTeamOpen}

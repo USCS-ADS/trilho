@@ -22,7 +22,8 @@ export default async function TeamsPage() {
   let loadError: string | undefined;
 
   try {
-    teams = await fetchTeams(session.token);
+    // O administrador também vê os times arquivados (para restaurá-los).
+    teams = await fetchTeams(session.token, { includeArchived: currentUser.role === "admin" });
   } catch (error) {
     loadError = toUserMessage(error);
   }
@@ -42,6 +43,7 @@ export default async function TeamsPage() {
       initialTeams={teams}
       users={users}
       canCreateTeam={currentUser.role === "admin"}
+      currentUser={{ id: currentUser.id, role: currentUser.role }}
       loadError={loadError}
     />
   );
