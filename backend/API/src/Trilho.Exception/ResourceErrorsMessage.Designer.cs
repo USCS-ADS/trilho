@@ -195,6 +195,24 @@ namespace Trilho.Exception {
             }
         }
         
+        public static string CURRENT_PASSWORD_REQUIRED {
+            get {
+                return ResourceManager.GetString("CURRENT_PASSWORD_REQUIRED", resourceCulture);
+            }
+        }
+        
+        public static string CURRENT_PASSWORD_INVALID {
+            get {
+                return ResourceManager.GetString("CURRENT_PASSWORD_INVALID", resourceCulture);
+            }
+        }
+        
+        public static string CANNOT_DEACTIVATE_YOURSELF {
+            get {
+                return ResourceManager.GetString("CANNOT_DEACTIVATE_YOURSELF", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Team not found..
         /// </summary>
