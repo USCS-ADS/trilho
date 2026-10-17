@@ -3,12 +3,25 @@
 import { toUserMessage } from "@/app/lib/api/errors";
 import { isMockMode } from "@/app/lib/api/config";
 import { cancelInvite, createInvite } from "@/app/lib/api/invites";
-import { fetchCurrentUser, updateUser } from "@/app/lib/api/users";
+import {
+    changePassword,
+    createUser,
+    deleteUser,
+    fetchCurrentUser,
+    setUserActive,
+    updateUser,
+} from "@/app/lib/api/users";
 import { verifySession } from "@/app/lib/session/dal";
 import { validate } from "@/app/lib/validation";
 import { revalidatePath } from "next/cache";
-import type { PendingInvite } from "@/app/lib/teams/types";
-import { changeRoleSchema, createInviteSchema, profileSchema } from "./schema";
+import type { PendingInvite, User } from "@/app/lib/teams/types";
+import {
+    changePasswordSchema,
+    changeRoleSchema,
+    createInviteSchema,
+    createUserSchema,
+    profileSchema,
+} from "./schema";
 
 export type ActionResult = { ok: true } | { ok: false; message: string };
 
@@ -104,4 +117,80 @@ export async function cancelInviteAction(inviteId: string): Promise<ActionResult
     } catch (error) {
         return { ok: false, message: toUserMessage(error) };
     }
+}
+
+const DEMO_MESSAGE = "Indisponível no modo demonstração.";
+
+export type CreateUserResult = { ok: true; user: User } | { ok: false; message: string };
+
+/** Admin cria o usuário direto, já ativo (a API aplica o perfil de acesso: só administrador). */
+export async function createUserAction(input: unknown): Promise<CreateUserResult> {
+    const session = await verifySession();
+
+    const result = validate(createUserSchema([]), input);
+    if (!result.success) return { ok: false, message: Object.values(result.errors)[0] };
+
+    if (isMockMode) return { ok: false, message: DEMO_MESSAGE };
+
+    try {
+        const user = await createUser(
+            { ...result.data, email: result.data.email.toLowerCase() },
+            session.token,
+        );
+
+        revalidatePath("/configuracoes");
+        return { ok: true, user };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+}
+
+/** Ativa/desativa um usuário. Desativar não apaga nada: o histórico (tarefas, comentários) permanece. */
+export async function setUserActiveAction(userId: string, isActive: boolean): Promise<ActionResult> {
+    const session = await verifySession();
+
+    if (isMockMode) return { ok: false, message: DEMO_MESSAGE };
+
+    try {
+        await setUserActive(userId, isActive, session.token);
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+
+    revalidatePath("/configuracoes");
+    return { ok: true };
+}
+
+export async function deleteUserAction(userId: string): Promise<ActionResult> {
+    const session = await verifySession();
+
+    if (isMockMode) return { ok: false, message: DEMO_MESSAGE };
+
+    try {
+        await deleteUser(userId, session.token);
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+
+    revalidatePath("/configuracoes");
+    return { ok: true };
+}
+
+/** Troca a própria senha: exige a atual e mantém a sessão (o token continua válido). */
+export async function changeOwnPasswordAction(input: unknown): Promise<ActionResult> {
+    const session = await verifySession();
+
+    const result = validate(changePasswordSchema, input);
+    if (!result.success) return { ok: false, message: Object.values(result.errors)[0] };
+
+    try {
+        await changePassword(
+            { currentPassword: result.data.currentPassword, newPassword: result.data.newPassword },
+            session.token,
+        );
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+
+    return { ok: true };
 }

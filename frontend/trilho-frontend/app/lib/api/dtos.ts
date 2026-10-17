@@ -29,6 +29,19 @@ export interface ResponseUserJson {
     name: string;
     email: string;
     role: string;
+    /** Ausente em respostas de versões antigas da API: tratado como ativo. */
+    isActive?: boolean;
+}
+
+/** Requests/Users/RequestChangePasswordJson.cs */
+export interface RequestChangePasswordJson {
+    currentPassword: string;
+    newPassword: string;
+}
+
+/** Requests/Users/RequestUserStatusJson.cs */
+export interface RequestUserStatusJson {
+    isActive: boolean;
 }
 
 /** Requests/Teams/RequestTeamJson.cs */
