@@ -238,6 +238,8 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 | `Settings:FrontendBaseUrl`                    | Base dos links enviados por e-mail (ex: ativação de conta)  |
 | `Settings:Invite:ExpiresDays`                 | Validade do convite, em dias (padrão 7)                   |
 | `Settings:PasswordReset:{ExpiresMinutes,MaxAttempts}` | Validade (15 min) e tentativas (5) do código       |
+| `Settings:Email:Provider`                    | `Log` (padrão: só registra no log) ou `Smtp` (envio real)  |
+| `Settings:Email:Smtp:{Host,Port,UserName,Password,EnableSsl,FromAddress,FromName}` | Servidor SMTP; senha via user-secrets/variável de ambiente |
 | `Settings:Email:LogBody`                      | Em dev, registra o corpo do e-mail (link/código) no log   |
 | `Settings:PublicApiBaseUrl`                   | Base pública da API usada na URL do webhook exibida ao conectar |
 | `Settings:Git:{MaxAttempts,RetryIntervalSeconds}` | Tentativas por evento (5) e intervalo do reprocessamento (60 s) |
@@ -252,7 +254,7 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 
 ## Possíveis evoluções
 
-- Envio real de e-mail (SMTP/API): hoje o `IEmailSender` apenas registra no log.
+- Provedores de e-mail por API (SendGrid/Resend) como novas implementações de `IEmailSender`.
 - Trocar o motor de priorização por regras (`RuleBasedPrioritizationEngine`) por um modelo de ML via `IPrioritizationEngine`.
 - Paginação das demais listagens (times, convites, repositórios) e bloqueio por tentativas de login (além do rate limit por IP).
 - Métricas/tracing (OpenTelemetry) e envio dos logs a um agregador.
