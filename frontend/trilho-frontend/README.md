@@ -86,3 +86,12 @@ Tudo roda no servidor (`app/lib/api`, marcado com `server-only`):
 
 Cite `#123`, `task-123` ou `trilho-123` na branch, no título/descrição do PR ou no commit: o webhook
 move a tarefa (PR aberto → Em Revisão, merge → Concluído) e registra no histórico.
+
+## Testes
+
+```bash
+npm test          # Vitest (unitários: mappers, schemas, regras de senha, filtros do Kanban, mensagens de erro)
+npm run test:watch
+```
+
+O CI (`.github/workflows/frontend-ci.yml`) roda lint, `tsc`, testes, build e `npm audit --omit=dev`.
