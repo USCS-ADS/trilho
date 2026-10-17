@@ -46,7 +46,7 @@ function buildJustification(task: Task, openByAssignee: Map<string, number>, tod
  * Mock do ranking de priorização (RF07). Regras: tarefas marcadas manualmente
  * como "Urgente" ficam sempre no topo, depois vem a prioridade sugerida e, em
  * empate, o prazo mais próximo.
- * TODO: substituir pela chamada ao módulo de IA do backend.
+ * Só usado no modo demonstração; com a API ligada o ranking vem de GET /api/Prioritization/ranking.
  */
 export function rankTasks(tasks: Task[], today: string): RankedTask[] {
     const openTasks = tasks.filter((task) => task.status !== "done");
