@@ -6,6 +6,8 @@ export interface User {
     initials: string;
     email: string;
     role: UserRole;
+    /** Usuário desativado não entra no sistema; `undefined` (modo demonstração) = ativo. */
+    isActive?: boolean;
 }
 
 export interface Team {

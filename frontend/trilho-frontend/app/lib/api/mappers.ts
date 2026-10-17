@@ -46,6 +46,7 @@ export function userFromApi(dto: ResponseUserJson): User {
         initials: initialsOf(dto.name),
         email: dto.email,
         role: roleFromApi(dto.role),
+        isActive: dto.isActive ?? true,
     };
 }
 

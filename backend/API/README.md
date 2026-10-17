@@ -90,6 +90,8 @@ Todas as rotas exigem `Authorization: Bearer <token>`, exceto as marcadas como a
 | GET    | `/api/User/{id}` | autenticado            | Busca um usuário por id          | 200       | 404                                   |
 | PUT    | `/api/User/{id}` | próprio ou admin       | Atualiza (perfil só pelo admin)  | 204       | 400 / 403 / 404                       |
 | DELETE | `/api/User/{id}` | administrador          | Remove um usuário                | 204       | 403 / 404 / 409 (a si mesmo)          |
+| PUT    | `/api/User/change-password` | autenticado | Troca a própria senha (exige a atual) | 204 | 400 (senha atual incorreta/fraca) |
+| PUT    | `/api/User/{id}/status` | administrador | Ativa/desativa (`{"isActive": bool}`); desativado não entra | 204 | 404 / 409 (a si mesmo ou líder de time) |
 | POST   | `/api/Team`                  | administrador          | Cria um time (líder vira membro)        | 201       | 400 / 404 / 409 (líder já lidera outro) |
 | GET    | `/api/Team`                  | autenticado            | Lista times (admin: todos; demais: os próprios) | 200 / 204 | —                       |
 | GET    | `/api/Team/{id}`             | admin ou membro        | Detalhe com líder e membros             | 200       | 403 / 404                             |

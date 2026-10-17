@@ -2,7 +2,12 @@ import "server-only";
 import { listUsers as listMockUsers, type User, type UserRole } from "../teams";
 import { apiFetch, apiFetchRaw } from "./client";
 import { isMockMode } from "./config";
-import type { RequestUserJson, ResponseUserJson } from "./dtos";
+import type {
+    RequestChangePasswordJson,
+    RequestUserJson,
+    RequestUserStatusJson,
+    ResponseUserJson,
+} from "./dtos";
 import { ApiError } from "./errors";
 import { roleToApi, userFromApi } from "./mappers";
 
@@ -92,4 +97,47 @@ export async function updateUser(
         body,
         token,
     });
+}
+
+/** POST /api/User (só administrador): cria o usuário já ativo, com a senha informada. */
+export async function createUser(
+    input: { name: string; email: string; password: string; role: UserRole },
+    token: string,
+): Promise<User> {
+    if (isMockMode) throw new ApiError(400, ["Indisponível no modo demonstração."]);
+
+    const body: RequestUserJson = { ...input, role: roleToApi(input.role) };
+    const created = await apiFetch<ResponseUserJson>("/api/User", { method: "POST", body, token });
+    if (!created) throw new ApiError(502, []);
+
+    return userFromApi(created);
+}
+
+/**
+ * PUT /api/User/{id}/status (só administrador). Desativar bloqueia o login e derruba o token
+ * em uso, mas preserva o histórico; a API recusa desativar a si mesmo e quem lidera um time.
+ */
+export async function setUserActive(userId: string, isActive: boolean, token: string) {
+    if (isMockMode) return;
+
+    const body: RequestUserStatusJson = { isActive };
+    await apiFetch<undefined>(`/api/User/${encodeURIComponent(userId)}/status`, {
+        method: "PUT",
+        body,
+        token,
+    });
+}
+
+/** DELETE /api/User/{id} (só administrador) — a API recusa excluir a si mesmo e quem lidera um time. */
+export async function deleteUser(userId: string, token: string) {
+    if (isMockMode) return;
+
+    await apiFetch<undefined>(`/api/User/${encodeURIComponent(userId)}`, { method: "DELETE", token });
+}
+
+/** PUT /api/User/change-password — troca a senha de quem está logado, exigindo a senha atual. */
+export async function changePassword(input: RequestChangePasswordJson, token: string) {
+    if (isMockMode) return;
+
+    await apiFetch<undefined>("/api/User/change-password", { method: "PUT", body: input, token });
 }

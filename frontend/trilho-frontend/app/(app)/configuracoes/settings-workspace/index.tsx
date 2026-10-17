@@ -4,8 +4,18 @@ import { PageHeader } from "@/app/components/page-header";
 import type { UserRole } from "@/app/lib/teams/roles";
 import type { NewInviteInput, PendingInvite, User } from "@/app/lib/teams/types";
 import { useMemo, useRef, useState } from "react";
-import { cancelInviteAction, changeUserRole, inviteUserAction } from "../actions";
+import {
+    cancelInviteAction,
+    changeUserRole,
+    createUserAction,
+    deleteUserAction,
+    inviteUserAction,
+    setUserActiveAction,
+} from "../actions";
+import { CreateUserModal } from "../create-user-modal";
+import type { NewUserInput } from "../create-user-modal/create-user-form";
 import { InviteUserModal } from "../invite-user-modal";
+import { PasswordCard } from "../password-card";
 import { ProfileCard } from "../profile-card";
 import type { PersonRow } from "../types";
 import { UsersCard } from "../users-card";
@@ -53,6 +63,7 @@ export function SettingsWorkspace({
     const [users, setUsers] = useState(initialUsers);
     const [invites, setInvites] = useState<PendingInvite[]>(initialInvites);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [actionError, setActionError] = useState<string | undefined>();
     const localIdCounter = useRef(0);
 
@@ -66,7 +77,7 @@ export function SettingsWorkspace({
             teamNames: teams
                 .filter((team) => team.memberIds.includes(user.id))
                 .map((team) => team.name),
-            status: "active",
+            status: user.isActive === false ? "inactive" : "active",
         }));
 
         const inviteRows = invites.map<PersonRow>((invite) => ({
@@ -105,6 +116,46 @@ export function SettingsWorkspace({
                 );
             }
         }
+    }
+
+    async function handleSetActive(userId: string, isActive: boolean) {
+        setActionError(undefined);
+
+        // Otimista: atualiza a tela e desfaz se o servidor recusar (ex.: usuário lidera um time).
+        setUsers((previous) =>
+            previous.map((user) => (user.id === userId ? { ...user, isActive } : user)),
+        );
+
+        const result = await setUserActiveAction(userId, isActive);
+        if (!result.ok) {
+            setActionError(result.message);
+            setUsers((previous) =>
+                previous.map((user) =>
+                    user.id === userId ? { ...user, isActive: !isActive } : user,
+                ),
+            );
+        }
+    }
+
+    async function handleDelete(userId: string) {
+        setActionError(undefined);
+
+        const result = await deleteUserAction(userId);
+        if (!result.ok) {
+            setActionError(result.message);
+            return;
+        }
+
+        setUsers((previous) => previous.filter((user) => user.id !== userId));
+    }
+
+    /** Devolve a mensagem de erro (ou `undefined` se criou) para o modal exibir. */
+    async function handleCreateUser(input: NewUserInput): Promise<string | undefined> {
+        const result = await createUserAction(input);
+        if (!result.ok) return result.message;
+
+        setUsers((previous) => [...previous, result.user]);
+        return undefined;
     }
 
     /** Devolve a mensagem de erro (ou `undefined` se enviou) para o modal exibir. */
@@ -167,11 +218,28 @@ export function SettingsWorkspace({
                         onInvite={() => setIsInviteOpen(true)}
                         onCancelInvite={canInvite ? handleCancelInvite : undefined}
                         onRoleChange={handleRoleChange}
+                        canCreateUser={currentRole === "admin" && !isDemoData}
+                        onCreateUser={() => setIsCreateOpen(true)}
+                        canManageUsers={currentRole === "admin" && !isDemoData}
+                        currentUserId={currentUser.id}
+                        onSetActive={handleSetActive}
+                        onDelete={handleDelete}
                     />
                 </div>
 
-                <ProfileCard name={currentUser.name} email={currentUser.email} />
+                <div className="flex flex-col gap-4">
+                    <ProfileCard name={currentUser.name} email={currentUser.email} />
+                    {!isDemoData && <PasswordCard />}
+                </div>
             </div>
+
+            <CreateUserModal
+                open={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onCreate={handleCreateUser}
+                roles={assignableRoles}
+                existingEmails={existingEmails}
+            />
 
             <InviteUserModal
                 open={isInviteOpen}

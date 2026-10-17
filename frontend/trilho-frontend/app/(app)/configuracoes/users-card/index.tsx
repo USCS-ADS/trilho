@@ -5,6 +5,7 @@ import { Card, CardTitle } from "@/app/components/card";
 import { controlClasses } from "@/app/components/form-field";
 import { PlusIcon } from "@/app/components/icons";
 import { ROLE_LABELS, type UserRole } from "@/app/lib/teams/roles";
+import { useState } from "react";
 import type { PersonRow } from "../types";
 
 interface UsersCardProps {
@@ -21,7 +22,21 @@ interface UsersCardProps {
     /** Cancela um convite pendente (só quando quem vê pode convidar). */
     onCancelInvite?: (inviteId: string) => void;
     onRoleChange: (userId: string, role: UserRole) => void;
+    /** Só administrador cria usuário direto (sem convite). */
+    canCreateUser: boolean;
+    onCreateUser: () => void;
+    /** Só administrador ativa/desativa/exclui; o próprio usuário nunca aparece com essas ações. */
+    canManageUsers: boolean;
+    currentUserId: string;
+    onSetActive: (userId: string, isActive: boolean) => void;
+    onDelete: (userId: string) => void;
 }
+
+const STATUS_LABELS: Record<PersonRow["status"], string> = {
+    active: "Ativo",
+    inactive: "Inativo",
+    invited: "Convite pendente",
+};
 
 export function UsersCard({
     people,
@@ -32,17 +47,33 @@ export function UsersCard({
     onInvite,
     onCancelInvite,
     onRoleChange,
+    canCreateUser,
+    onCreateUser,
+    canManageUsers,
+    currentUserId,
+    onSetActive,
+    onDelete,
 }: UsersCardProps) {
+    const [confirmingDeleteId, setConfirmingDeleteId] = useState<string>();
+
     return (
         <Card>
             <div className="mb-4 flex items-center justify-between gap-3">
                 <CardTitle className="mb-0">Usuários e perfis de acesso</CardTitle>
-                {canInvite && (
-                    <Button type="button" className="gap-1.5 text-sm" onClick={onInvite}>
-                        <PlusIcon className="h-4 w-4" />
-                        Convidar usuário
-                    </Button>
-                )}
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                    {canCreateUser && (
+                        <Button type="button" variant="secondary" className="gap-1.5 text-sm" onClick={onCreateUser}>
+                            <PlusIcon className="h-4 w-4" />
+                            Criar usuário
+                        </Button>
+                    )}
+                    {canInvite && (
+                        <Button type="button" className="gap-1.5 text-sm" onClick={onInvite}>
+                            <PlusIcon className="h-4 w-4" />
+                            Convidar usuário
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -79,7 +110,7 @@ export function UsersCard({
                                     </td>
                                 )}
                                 <td className="py-3 pr-4">
-                                    {canManageRoles && person.status === "active" ? (
+                                    {canManageRoles && person.status !== "invited" ? (
                                         <select
                                             aria-label={`Perfil de ${person.name}`}
                                             value={person.role}
@@ -103,8 +134,51 @@ export function UsersCard({
                                 <td className="py-3">
                                     <div className="flex items-center gap-3">
                                         <Badge tone={person.status === "active" ? "success" : "warning"}>
-                                            {person.status === "active" ? "Ativo" : "Convite pendente"}
+                                            {STATUS_LABELS[person.status]}
                                         </Badge>
+                                        {canManageUsers && person.status !== "invited" && person.id !== currentUserId && (
+                                            confirmingDeleteId === person.id ? (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setConfirmingDeleteId(undefined);
+                                                            onDelete(person.id);
+                                                        }}
+                                                        aria-label={`Confirmar exclusão de ${person.name}`}
+                                                        className="text-xs font-medium text-trilho-danger hover:underline"
+                                                    >
+                                                        Confirmar exclusão
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setConfirmingDeleteId(undefined)}
+                                                        className="text-xs text-trilho-dim hover:underline"
+                                                    >
+                                                        Voltar
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onSetActive(person.id, person.status !== "active")}
+                                                        aria-label={`${person.status === "active" ? "Desativar" : "Reativar"} ${person.name}`}
+                                                        className="text-xs text-trilho-dim hover:text-trilho-text hover:underline"
+                                                    >
+                                                        {person.status === "active" ? "Desativar" : "Reativar"}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setConfirmingDeleteId(person.id)}
+                                                        aria-label={`Excluir ${person.name}`}
+                                                        className="text-xs text-trilho-dim hover:text-trilho-danger hover:underline"
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                </>
+                                            )
+                                        )}
                                         {person.status === "invited" && onCancelInvite && (
                                             <button
                                                 type="button"
