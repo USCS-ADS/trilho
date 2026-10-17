@@ -40,9 +40,16 @@ interface KanbanBoardProps {
     columns: KanbanColumnData[];
     onColumnsChange: Dispatch<SetStateAction<KanbanColumnData[]>>;
     onCardMoved?: (move: CardMove) => void;
+    /** Com filtros ativos há cards escondidos: reordenar daria posições erradas, então o arrasto é desligado. */
+    isDragDisabled?: boolean;
 }
 
-export function KanbanBoard({ columns, onColumnsChange, onCardMoved }: KanbanBoardProps) {
+export function KanbanBoard({
+    columns,
+    onColumnsChange,
+    onCardMoved,
+    isDragDisabled = false,
+}: KanbanBoardProps) {
     const [activeCard, setActiveCard] = useState<KanbanCardData | null>(null);
     const dragSnapshot = useRef<KanbanColumnData[]>(columns);
 
@@ -151,7 +158,7 @@ export function KanbanBoard({ columns, onColumnsChange, onCardMoved }: KanbanBoa
         >
             <div className="flex gap-4 overflow-x-auto pb-2">
                 {columns.map((column) => (
-                    <KanbanColumn key={column.id} column={column} />
+                    <KanbanColumn key={column.id} column={column} isDragDisabled={isDragDisabled} />
                 ))}
             </div>
 
