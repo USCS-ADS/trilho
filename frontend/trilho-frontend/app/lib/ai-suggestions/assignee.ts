@@ -9,7 +9,7 @@ export interface AssigneeSuggestion {
 
 /**
  * Mock da sugestão de responsável (RF07): o membro com menos tarefas em aberto.
- * TODO: substituir pela chamada ao módulo de IA.
+ * Só usado no modo demonstração; com a API ligada a sugestão vem de POST /api/Prioritization/suggest.
  */
 export function suggestAssignee(team: Team): AssigneeSuggestion | undefined {
     const tasks = listTasks();

@@ -21,6 +21,9 @@ interface ConfigureRepositoryFormProps {
     onRetrySync: () => void;
     onDisconnect: () => void;
     onCancel: () => void;
+    isPending?: boolean;
+    /** Erro devolvido pelo servidor na última ação. */
+    error?: string;
 }
 
 export function ConfigureRepositoryForm({
@@ -30,8 +33,11 @@ export function ConfigureRepositoryForm({
     onRetrySync,
     onDisconnect,
     onCancel,
+    isPending = false,
+    error: submitError,
 }: ConfigureRepositoryFormProps) {
-    const [teamId, setTeamId] = useState(repository.teamId);
+    // O time do repositório não muda pela API: para outro time, desconecte e conecte de novo.
+    const teamId = repository.teamId;
     const [events, setEvents] = useState<GitWebhookEvent[]>(repository.events);
     const { errors, validateValues, clearError } = useFormValidation(configureRepositorySchema);
 
@@ -49,7 +55,6 @@ export function ConfigureRepositoryForm({
         const data = validateValues({ teamId, events });
         if (!data) return;
 
-        // TODO: chamar a API que atualiza o webhook/vínculo do repositório.
         onSave(data);
     }
 
@@ -70,6 +75,7 @@ export function ConfigureRepositoryForm({
                         variant="danger"
                         className="text-xs"
                         onClick={onRetrySync}
+                        disabled={isPending}
                     >
                         Tentar novamente
                     </Button>
@@ -80,7 +86,8 @@ export function ConfigureRepositoryForm({
                 name="teamId"
                 label="Time responsável"
                 value={teamId}
-                onChange={(event) => setTeamId(event.target.value)}
+                disabled
+                onChange={() => undefined}
                 options={teams.map((team) => ({ value: team.id, label: team.name }))}
             />
 
@@ -113,19 +120,28 @@ export function ConfigureRepositoryForm({
                 )}
             </fieldset>
 
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
             <ModalFooter>
                 <Button
                     type="button"
                     variant="danger"
                     className="mr-auto"
                     onClick={onDisconnect}
+                    disabled={isPending}
                 >
                     Desconectar
                 </Button>
-                <Button type="button" variant="secondary" onClick={onCancel}>
+                <Button type="button" variant="secondary" onClick={onCancel} disabled={isPending}>
                     Cancelar
                 </Button>
-                <Button type="submit">Salvar</Button>
+                <Button type="submit" disabled={isPending}>
+                    {isPending ? "Salvando..." : "Salvar"}
+                </Button>
             </ModalFooter>
         </form>
     );

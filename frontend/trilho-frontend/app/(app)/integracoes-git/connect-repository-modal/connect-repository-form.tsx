@@ -14,9 +14,18 @@ interface ConnectRepositoryFormProps {
     teams: { id: string; name: string }[];
     onSubmit: (input: ConnectRepositoryInput) => void;
     onCancel: () => void;
+    isPending?: boolean;
+    /** Erro devolvido pelo servidor ao conectar. */
+    error?: string;
 }
 
-export function ConnectRepositoryForm({ teams, onSubmit, onCancel }: ConnectRepositoryFormProps) {
+export function ConnectRepositoryForm({
+    teams,
+    onSubmit,
+    onCancel,
+    isPending = false,
+    error: submitError,
+}: ConnectRepositoryFormProps) {
     const [provider, setProvider] = useState<GitProvider>("github");
     const [fullName, setFullName] = useState("");
     const [teamId, setTeamId] = useState(teams[0]?.id ?? "");
@@ -27,7 +36,6 @@ export function ConnectRepositoryForm({ teams, onSubmit, onCancel }: ConnectRepo
         const data = validateValues({ provider, fullName, teamId });
         if (!data) return;
 
-        // TODO: chamar a API (OAuth/token do provedor + registro do webhook).
         onSubmit(data);
     }
 
@@ -65,14 +73,23 @@ export function ConnectRepositoryForm({ teams, onSubmit, onCancel }: ConnectRepo
             />
 
             <p className="mb-2 text-xs text-trilho-dim">
-                O Trilho vai registrar um webhook para eventos de commit, pull request e merge.
+                Você receberá a URL e o segredo do webhook para cadastrar no provedor (eventos de
+                commit, pull request e merge).
             </p>
 
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
             <ModalFooter>
-                <Button type="button" variant="secondary" onClick={onCancel}>
+                <Button type="button" variant="secondary" onClick={onCancel} disabled={isPending}>
                     Cancelar
                 </Button>
-                <Button type="submit">Conectar</Button>
+                <Button type="submit" disabled={isPending}>
+                    {isPending ? "Conectando..." : "Conectar"}
+                </Button>
             </ModalFooter>
         </form>
     );

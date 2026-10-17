@@ -1,6 +1,6 @@
 import type { Task } from "./types";
 
-// TODO: substituir por dados reais da API (tarefas, subtarefas, comentários e vínculo Git).
+// Dados do MODO DEMONSTRAÇÃO (sem API_URL). Com a API ligada, vêm de /api/Task.
 
 /**
  * "Hoje" fixo do mock, pra que atraso e prazos não envelheçam com o relógio.

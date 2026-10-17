@@ -14,6 +14,16 @@ export interface GitRepository {
     /** Texto relativo já formatado (ex: "há 4 minutos"); virá do backend. */
     lastSync: string;
     events: GitWebhookEvent[];
+    /** Eventos recebidos aguardando (re)processamento. */
+    pendingEvents?: number;
+    /** URL que o provedor deve chamar (exibida ao conectar). */
+    webhookUrl?: string;
+}
+
+/** Dados exibidos uma única vez após conectar: o segredo não é recuperável depois. */
+export interface WebhookSetup {
+    url: string;
+    secret: string;
 }
 
 export interface ConnectRepositoryInput {

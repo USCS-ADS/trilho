@@ -6,11 +6,13 @@ import type { GitRepository } from "@/app/lib/git-integrations/types";
 interface RepositoryRowProps {
     repository: GitRepository;
     teamName: string;
-    onConfigure: () => void;
+    /** Ausente = o usuário não gerencia o time deste repositório (só visualiza). */
+    onConfigure?: () => void;
 }
 
 export function RepositoryRow({ repository, teamName, onConfigure }: RepositoryRowProps) {
     const hasError = repository.status === "error";
+    const pending = repository.pendingEvents ?? 0;
 
     return (
         <li className="flex items-center gap-4 rounded-xl border border-trilho-border bg-trilho-surface px-4 py-3">
@@ -25,20 +27,23 @@ export function RepositoryRow({ repository, teamName, onConfigure }: RepositoryR
                 <p className="truncate font-medium text-trilho-text">{repository.fullName}</p>
                 <p className="truncate text-sm text-trilho-dim">
                     Time {teamName} · última sincronização: {repository.lastSync}
+                    {pending > 0 && ` · ${pending} ${pending === 1 ? "evento na fila" : "eventos na fila"}`}
                 </p>
             </div>
 
             <Badge tone={hasError ? "danger" : "success"}>
                 {hasError ? "Erro de sincronização" : "Conectado"}
             </Badge>
-            <Button
-                type="button"
-                variant="secondary"
-                className="shrink-0 text-sm"
-                onClick={onConfigure}
-            >
-                Configurar
-            </Button>
+            {onConfigure && (
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="shrink-0 text-sm"
+                    onClick={onConfigure}
+                >
+                    Configurar
+                </Button>
+            )}
         </li>
     );
 }

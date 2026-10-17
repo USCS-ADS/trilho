@@ -1,6 +1,6 @@
 import type { Team, User } from "./types";
 
-// TODO: substituir por dados reais da API (usuários e times).
+// Dados do MODO DEMONSTRAÇÃO (sem API_URL). Com a API ligada, vêm de /api/User e /api/Team.
 
 export const USERS: User[] = [
     {
