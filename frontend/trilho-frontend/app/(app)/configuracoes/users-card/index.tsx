@@ -58,7 +58,7 @@ export function UsersCard({
 
     return (
         <Card>
-            <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <CardTitle className="mb-0">Usuários e perfis de acesso</CardTitle>
                 <div className="flex flex-wrap items-center justify-end gap-2">
                     {canCreateUser && (

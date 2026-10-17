@@ -199,7 +199,7 @@ export function SettingsWorkspace({
             <PageHeader title="Configurações" description="Usuários, perfis de acesso e seu perfil" />
 
             <div className="grid gap-6 p-4 sm:p-8 xl:grid-cols-3">
-                <div className="flex flex-col gap-4 xl:col-span-2">
+                <div className="flex min-w-0 flex-col gap-4 xl:col-span-2">
                     {(loadError || actionError) && (
                         <p
                             role="alert"
