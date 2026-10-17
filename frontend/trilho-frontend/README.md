@@ -92,6 +92,9 @@ move a tarefa (PR aberto → Em Revisão, merge → Concluído) e registra no hi
 ```bash
 npm test          # Vitest (unitários: mappers, schemas, regras de senha, filtros do Kanban, mensagens de erro)
 npm run test:watch
+npm run test:e2e  # Playwright (Chromium) em modo demonstração: login, arrastar com mouse, filtros, responsivo
 ```
+
+Na primeira vez: `npx playwright install chromium`.
 
 O CI (`.github/workflows/frontend-ci.yml`) roda lint, `tsc`, testes, build e `npm audit --omit=dev`.

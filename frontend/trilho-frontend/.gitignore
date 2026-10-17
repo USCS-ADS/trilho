@@ -42,3 +42,8 @@ next-env.d.ts
 
 # exemplo de variáveis de ambiente (sem segredos) deve ser versionado
 !.env.example
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
