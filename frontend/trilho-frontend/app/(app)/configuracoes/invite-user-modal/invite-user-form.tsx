@@ -17,6 +17,9 @@ interface InviteUserFormProps {
     existingEmails: string[];
     onSubmit: (input: NewInviteInput) => void;
     onCancel: () => void;
+    isPending?: boolean;
+    /** Erro devolvido pelo servidor ao enviar o convite. */
+    error?: string;
 }
 
 export function InviteUserForm({
@@ -25,6 +28,8 @@ export function InviteUserForm({
     existingEmails,
     onSubmit,
     onCancel,
+    isPending = false,
+    error: submitError,
 }: InviteUserFormProps) {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -43,7 +48,6 @@ export function InviteUserForm({
         const data = validateValues({ fullName, email, teamId, role });
         if (!data) return;
 
-        // TODO: chamar a API de convite (envio do e-mail com link de ativação) — endpoint ainda não existe.
         onSubmit({ ...data, email: data.email.toLowerCase() });
     }
 
@@ -100,11 +104,19 @@ export function InviteUserForm({
                 A pessoa receberá um e-mail com o link para ativar a conta e definir a senha.
             </p>
 
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
             <ModalFooter>
-                <Button type="button" variant="secondary" onClick={onCancel}>
+                <Button type="button" variant="secondary" onClick={onCancel} disabled={isPending}>
                     Cancelar
                 </Button>
-                <Button type="submit">Enviar convite</Button>
+                <Button type="submit" disabled={isPending}>
+                    {isPending ? "Enviando..." : "Enviar convite"}
+                </Button>
             </ModalFooter>
         </form>
     );

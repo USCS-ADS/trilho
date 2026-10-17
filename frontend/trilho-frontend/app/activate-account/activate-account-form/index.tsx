@@ -4,11 +4,13 @@ import { Button } from "@/app/components/button";
 import { Input } from "@/app/components/input";
 import { PasswordRules } from "@/app/components/password-rules";
 import { useFormValidation } from "@/app/lib/validation/use-form-validation";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { activateAccountAction } from "../actions";
 import { activateAccountSchema } from "../schema";
 
 interface ActivateAccountFormProps {
+    /** Token do convite (vem da URL de ativação). */
+    inviteToken: string;
     /** Nome informado no convite; o convidado pode confirmar/editar. */
     defaultFullName?: string;
     /** Time ao qual o convite pertence — definido por quem convidou, somente leitura. */
@@ -18,23 +20,31 @@ interface ActivateAccountFormProps {
 }
 
 export function ActivateAccountForm({
+    inviteToken,
     defaultFullName = "",
     team = "",
     email = "",
 }: ActivateAccountFormProps) {
-    const router = useRouter();
     const [fullName, setFullName] = useState(defaultFullName);
     const [password, setPassword] = useState("");
+    const [submitError, setSubmitError] = useState<string>();
+    const [isPending, setIsPending] = useState(false);
     const { errors, validateValues, clearError } = useFormValidation(activateAccountSchema);
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const data = validateValues({ fullName, password });
         if (!data) return;
 
-        // TODO: chamar a API de ativação — o backend ainda não tem fluxo de convite/ativação.
-        router.push("/login");
+        setSubmitError(undefined);
+        setIsPending(true);
+
+        // Sucesso redireciona ao login (dentro da action); só volta aqui quando há erro.
+        const result = await activateAccountAction(inviteToken, data.fullName, data.password);
+
+        setIsPending(false);
+        if (result && !result.ok) setSubmitError(result.message);
     }
 
     return (
@@ -75,8 +85,14 @@ export function ActivateAccountForm({
 
             <PasswordRules value={password} />
 
-            <Button type="submit" className="w-full">
-                Ativar Conta
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Ativando..." : "Ativar Conta"}
             </Button>
         </form>
     );

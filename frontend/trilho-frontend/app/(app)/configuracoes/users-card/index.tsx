@@ -15,7 +15,11 @@ interface UsersCardProps {
     showTeams: boolean;
     /** RF01: só Administradores alteram o perfil de acesso de outros usuários. */
     canManageRoles: boolean;
+    /** Administrador e líder convidam; para os demais o botão some. */
+    canInvite: boolean;
     onInvite: () => void;
+    /** Cancela um convite pendente (só quando quem vê pode convidar). */
+    onCancelInvite?: (inviteId: string) => void;
     onRoleChange: (userId: string, role: UserRole) => void;
 }
 
@@ -24,17 +28,21 @@ export function UsersCard({
     roles,
     showTeams,
     canManageRoles,
+    canInvite,
     onInvite,
+    onCancelInvite,
     onRoleChange,
 }: UsersCardProps) {
     return (
         <Card>
             <div className="mb-4 flex items-center justify-between gap-3">
                 <CardTitle className="mb-0">Usuários e perfis de acesso</CardTitle>
-                <Button type="button" className="gap-1.5 text-sm" onClick={onInvite}>
-                    <PlusIcon className="h-4 w-4" />
-                    Convidar usuário
-                </Button>
+                {canInvite && (
+                    <Button type="button" className="gap-1.5 text-sm" onClick={onInvite}>
+                        <PlusIcon className="h-4 w-4" />
+                        Convidar usuário
+                    </Button>
+                )}
             </div>
 
             <div className="overflow-x-auto">
@@ -93,9 +101,21 @@ export function UsersCard({
                                     )}
                                 </td>
                                 <td className="py-3">
-                                    <Badge tone={person.status === "active" ? "success" : "warning"}>
-                                        {person.status === "active" ? "Ativo" : "Convite pendente"}
-                                    </Badge>
+                                    <div className="flex items-center gap-3">
+                                        <Badge tone={person.status === "active" ? "success" : "warning"}>
+                                            {person.status === "active" ? "Ativo" : "Convite pendente"}
+                                        </Badge>
+                                        {person.status === "invited" && onCancelInvite && (
+                                            <button
+                                                type="button"
+                                                onClick={() => onCancelInvite(person.id)}
+                                                aria-label={`Cancelar convite de ${person.name}`}
+                                                className="text-xs text-trilho-dim hover:text-trilho-danger hover:underline"
+                                            >
+                                                Cancelar
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}

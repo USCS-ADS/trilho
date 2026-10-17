@@ -158,6 +158,8 @@ export interface ResponseActivityJson {
 export interface ResponseRankedTaskJson {
     rank: number;
     taskId: number;
+    title: string;
+    assigneeId?: number | null;
     currentPriority: string;
     suggestedPriority: string;
     justification: string;
@@ -168,4 +170,87 @@ export interface ResponsePrioritySuggestionJson {
     priority: string;
     justification: string;
     suggestedAssignee?: { userId: number; name: string; openTasks: number } | null;
+}
+
+/** Requests/Invites/RequestInviteJson.cs */
+export interface RequestInviteJson {
+    email: string;
+    fullName: string;
+    teamId: number;
+    role: string;
+}
+
+/** Responses/Invites/ResponseInviteJson.cs */
+export interface ResponseInviteJson {
+    id: number;
+    email: string;
+    fullName: string;
+    teamId: number;
+    teamName: string;
+    role: string;
+    expiresAt: string;
+    createdAt: string;
+}
+
+/** Responses/Invites/ResponseInviteLookupJson.cs */
+export interface ResponseInviteLookupJson {
+    fullName: string;
+    email: string;
+    teamName: string;
+    role: string;
+}
+
+/** Responses/Dashboard/ResponseDashboardJson.cs */
+export interface ResponseDashboardJson {
+    activeTasks: number;
+    completedInCurrentSprint: number;
+    overdueTasks: number;
+    activeTeams: number;
+    alertThresholdPercent: number;
+    teamWorkloads: {
+        teamId: number;
+        teamName: string;
+        workloadPercent: number;
+        isOverloaded: boolean;
+    }[];
+    sprints: { label: string; startDate: string; endDate: string; completed: number; isCurrent: boolean }[];
+}
+
+/** Responses/Notifications/ResponseNotificationListJson.cs */
+export interface ResponseNotificationListJson {
+    unreadCount: number;
+    notifications: {
+        id: number;
+        type: string;
+        message: string;
+        taskId?: number | null;
+        createdAt: string;
+        isRead: boolean;
+    }[];
+}
+
+/** Responses/Prioritization/ResponseApplyRankingJson.cs */
+export interface ResponseApplyRankingJson {
+    updated: number;
+    changes: { taskId: number; from: string; to: string }[];
+}
+
+/** Responses/Git/ResponseGitRepositoryJson.cs (a conexão devolve também `webhookSecret`) */
+export interface ResponseGitRepositoryJson {
+    id: number;
+    provider: string;
+    fullName: string;
+    teamId: number;
+    status: string;
+    lastSyncAt?: string | null;
+    events: string[];
+    pendingEvents: number;
+    webhookUrl: string;
+    createdAt: string;
+    webhookSecret?: string;
+}
+
+export interface ResponseGitRunJson {
+    processed: number;
+    failed: number;
 }
