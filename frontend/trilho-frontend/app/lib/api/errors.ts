@@ -15,7 +15,6 @@ export class ApiError extends Error {
 
 const GENERIC_MESSAGE = "Não foi possível concluir a operação. Tente novamente em instantes.";
 
-/** Texto seguro para exibir ao usuário a partir de qualquer erro capturado. */
 /** Respostas de 401/403/429 do ASP.NET (autenticação, políticas, rate limit) vêm sem corpo: damos um texto padrão. */
 const DEFAULT_MESSAGES: Record<number, string> = {
     401: "Sua sessão expirou. Entre novamente.",
@@ -24,6 +23,7 @@ const DEFAULT_MESSAGES: Record<number, string> = {
     429: "Muitas tentativas em pouco tempo. Aguarde um minuto e tente novamente.",
 };
 
+/** Texto seguro para exibir ao usuário a partir de qualquer erro capturado. */
 export function toUserMessage(error: unknown): string {
     if (error instanceof ApiError) {
         if (error.isNetworkError) {
