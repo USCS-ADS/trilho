@@ -41,7 +41,7 @@ public static class DependencyInjectionExtension
         services.AddSingleton<IRetentionSettings, RetentionSettings>();
 
         AddGit(services, configuration);
-        services.AddSingleton<IEmailSender, LogEmailSender>();
+        AddEmail(services, configuration);
 
         // Nos testes de integração o DbContext é registrado pela fábrica (em memória).
         if (configuration.IsTestEnvironment() == false)
@@ -96,6 +96,32 @@ public static class DependencyInjectionExtension
 
         services.AddScoped<IPendingGitEventWriteOnlyRepository, PendingGitEventRepository>();
         services.AddScoped<IPendingGitEventUpdateOnlyRepository, PendingGitEventRepository>();
+    }
+
+    /// <summary>
+    /// <c>Settings:Email:Provider</c>: "Log" (padrão, só registra no log — desenvolvimento) ou "Smtp" (envio real).
+    /// </summary>
+    private static void AddEmail(IServiceCollection services, IConfiguration configuration)
+    {
+        var provider = configuration.GetValue<string>("Settings:Email:Provider") ?? "Log";
+
+        if (provider.Equals("Smtp", StringComparison.OrdinalIgnoreCase))
+        {
+            var settings = SmtpSettings.From(configuration);
+            settings.EnsureValid();
+
+            services.AddSingleton(settings);
+            services.AddSingleton<IEmailSender, SmtpEmailSender>();
+
+            return;
+        }
+
+        if (provider.Equals("Log", StringComparison.OrdinalIgnoreCase) == false)
+        {
+            throw new InvalidOperationException($"Settings:Email:Provider inválido: '{provider}'. Use 'Log' ou 'Smtp'.");
+        }
+
+        services.AddSingleton<IEmailSender, LogEmailSender>();
     }
 
     private static void AddGit(IServiceCollection services, IConfiguration configuration)
