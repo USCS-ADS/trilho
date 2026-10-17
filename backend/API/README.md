@@ -236,11 +236,12 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 |-------------------------------------------------|-----------------------------------------------------------|
 | `ConnectionStrings:Connection`                 | Connection string do MySQL                                |
 | `Settings:Jwt:SigningKey`                      | Chave de assinatura do JWT (obrigatória, ≥ 32 caracteres) |
-| `Settings:Jwt:ExpiresMinutes`                  | Expiração do token, em minutos                            |
+| `Settings:Jwt:ExpiresMinutes`                  | Validade do token, em minutos (padrão 480 = 8 h). Não há refresh token: ao expirar o front limpa a sessão e volta ao login. Desativar a conta invalida o token na hora |
 | `Settings:FrontendBaseUrl`                    | Base dos links enviados por e-mail (ex: ativação de conta)  |
 | `Settings:Invite:ExpiresDays`                 | Validade do convite, em dias (padrão 7)                   |
 | `Settings:PasswordReset:{ExpiresMinutes,MaxAttempts}` | Validade (15 min) e tentativas (5) do código       |
 | `Settings:Login:{MaxFailedAttempts,LockoutMinutes}` | Senhas erradas seguidas que bloqueiam a conta (5) e por quantos minutos (15); a resposta é 429. Redefinir a senha destrava |
+| `Settings:SeedDemo:{Enabled,Password}` | Cria dados de demonstração (time, 3 usuários `@trilho.demo`, 8 tarefas) uma única vez; a senha vem de user-secrets/variável de ambiente. Deixe desligado em produção |
 | `Settings:Email:Provider`                    | `Log` (padrão: só registra no log) ou `Smtp` (envio real)  |
 | `Settings:Email:Smtp:{Host,Port,UserName,Password,EnableSsl,FromAddress,FromName}` | Servidor SMTP; senha via user-secrets/variável de ambiente |
 | `Settings:Email:LogBody`                      | Em dev, registra o corpo do e-mail (link/código) no log   |
