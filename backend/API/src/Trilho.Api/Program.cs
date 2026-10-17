@@ -114,6 +114,7 @@ if (builder.Configuration.IsTestEnvironment() == false)
 {
     await MigrateDatabase();
     await AdminSeeder.Seed(app.Services, builder.Configuration);
+    await DemoSeeder.Seed(app.Services, builder.Configuration);
 }
 
 app.Run();
