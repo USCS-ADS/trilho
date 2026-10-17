@@ -18,6 +18,8 @@ export interface Team {
     tasksInProgress: number;
     /** Carga de trabalho em % da capacidade estimada (RF08). Mockado, idem acima. */
     workload: number;
+    /** Times arquivados só aparecem para o administrador, marcados como tal. */
+    isArchived?: boolean;
 }
 
 export interface TeamWithMembers extends Team {
