@@ -4,23 +4,30 @@ import { Button } from "@/app/components/button";
 import { Input } from "@/app/components/input";
 import { useFormValidation } from "@/app/lib/validation/use-form-validation";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { requestResetAction } from "../actions";
 import { requestResetSchema } from "../schema";
 
 export function RequestResetForm() {
-    const router = useRouter();
     const [email, setEmail] = useState("");
+    const [submitError, setSubmitError] = useState<string>();
+    const [isPending, setIsPending] = useState(false);
     const { errors, validateValues, clearError } = useFormValidation(requestResetSchema);
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const data = validateValues({ email });
         if (!data) return;
 
-        // TODO: chamar a API que envia o código de redefinição — endpoint ainda não existe.
-        router.push("/reset-password/verify-code");
+        setSubmitError(undefined);
+        setIsPending(true);
+
+        // Sucesso redireciona ao passo 2 (dentro da action); só volta aqui quando há erro.
+        const result = await requestResetAction(data.email);
+
+        setIsPending(false);
+        if (result && !result.ok) setSubmitError(result.message);
     }
 
     return (
@@ -40,8 +47,14 @@ export function RequestResetForm() {
                 required
             />
 
-            <Button type="submit" className="w-full">
-                Enviar código
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Enviando..." : "Enviar código"}
             </Button>
 
             <p className="mt-6 text-center text-sm text-trilho-dim">

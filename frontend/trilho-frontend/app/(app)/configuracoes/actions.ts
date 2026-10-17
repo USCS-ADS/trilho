@@ -1,11 +1,14 @@
 "use server";
 
 import { toUserMessage } from "@/app/lib/api/errors";
+import { isMockMode } from "@/app/lib/api/config";
+import { cancelInvite, createInvite } from "@/app/lib/api/invites";
 import { fetchCurrentUser, updateUser } from "@/app/lib/api/users";
 import { verifySession } from "@/app/lib/session/dal";
 import { validate } from "@/app/lib/validation";
 import { revalidatePath } from "next/cache";
-import { changeRoleSchema, profileSchema } from "./schema";
+import type { PendingInvite } from "@/app/lib/teams/types";
+import { changeRoleSchema, createInviteSchema, profileSchema } from "./schema";
 
 export type ActionResult = { ok: true } | { ok: false; message: string };
 
@@ -57,4 +60,48 @@ export async function updateOwnName(name: string): Promise<ActionResult> {
 
     revalidatePath("/", "layout");
     return { ok: true };
+}
+
+export type InviteResult =
+    | { ok: true; invite?: PendingInvite }
+    | { ok: false; message: string };
+
+/**
+ * RF01: sem autocadastro — convidar é com administrador (qualquer time/perfil) ou líder
+ * (só o próprio time, perfil Membro). A API aplica essas regras; aqui só validamos o formato.
+ * No modo demonstração devolve `ok` sem convite e o cliente o mantém só na tela.
+ */
+export async function inviteUserAction(input: unknown): Promise<InviteResult> {
+    const session = await verifySession();
+
+    const result = validate(createInviteSchema([]), input);
+    if (!result.success) return { ok: false, message: Object.values(result.errors)[0] };
+
+    if (isMockMode) return { ok: true };
+
+    try {
+        const invite = await createInvite(
+            { ...result.data, email: result.data.email.toLowerCase() },
+            session.token,
+        );
+
+        revalidatePath("/configuracoes");
+        return { ok: true, invite };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
+}
+
+export async function cancelInviteAction(inviteId: string): Promise<ActionResult> {
+    const session = await verifySession();
+
+    if (isMockMode || inviteId.startsWith("local-")) return { ok: true };
+
+    try {
+        await cancelInvite(inviteId, session.token);
+        revalidatePath("/configuracoes");
+        return { ok: true };
+    } catch (error) {
+        return { ok: false, message: toUserMessage(error) };
+    }
 }

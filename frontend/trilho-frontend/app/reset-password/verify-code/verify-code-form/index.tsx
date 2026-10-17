@@ -2,15 +2,17 @@
 
 import { Button } from "@/app/components/button";
 import { useFormValidation } from "@/app/lib/validation/use-form-validation";
-import { useRouter } from "next/navigation";
-import { FormEvent, KeyboardEvent, useRef } from "react";
+import { FormEvent, KeyboardEvent, useRef, useState } from "react";
+import { resendCodeAction, verifyCodeAction } from "../../actions";
 import { verifyCodeSchema } from "../../schema";
 
 const CODE_LENGTH = 6;
 
 export function VerifyCodeForm() {
-    const router = useRouter();
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+    const [submitError, setSubmitError] = useState<string>();
+    const [notice, setNotice] = useState<string>();
+    const [isPending, setIsPending] = useState(false);
     const { errors, validateValues, clearError } = useFormValidation(verifyCodeSchema);
 
     function focusInput(index: number) {
@@ -34,19 +36,35 @@ export function VerifyCodeForm() {
         }
     }
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const code = inputsRef.current.map((input) => input?.value ?? "").join("");
         const data = validateValues({ code });
         if (!data) return;
 
-        // TODO: chamar a API de confirmação do código — endpoint ainda não existe.
-        router.push("/reset-password/new-password");
+        setSubmitError(undefined);
+        setNotice(undefined);
+        setIsPending(true);
+
+        // Sucesso redireciona ao passo 3 (dentro da action); só volta aqui quando há erro.
+        const result = await verifyCodeAction(data.code);
+
+        setIsPending(false);
+        if (result && !result.ok) setSubmitError(result.message);
     }
 
-    function handleResendCode() {
-        // TODO: chamar a API para reenviar o código de verificação
+    async function handleResendCode() {
+        setSubmitError(undefined);
+        setNotice(undefined);
+
+        const result = await resendCodeAction();
+
+        if (result.ok) {
+            setNotice("Enviamos um novo código. O anterior deixou de valer.");
+        } else {
+            setSubmitError(result.message);
+        }
     }
 
     return (
@@ -96,8 +114,19 @@ export function VerifyCodeForm() {
                 </button>
             </p>
 
-            <Button type="submit" className="w-full">
-                Confirmar Código
+            {submitError && (
+                <p role="alert" className="mb-4 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+            {notice && (
+                <p role="status" className="mb-4 text-sm text-trilho-success">
+                    {notice}
+                </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Confirmando..." : "Confirmar Código"}
             </Button>
         </form>
     );

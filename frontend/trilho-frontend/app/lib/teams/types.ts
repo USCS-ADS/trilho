@@ -38,3 +38,8 @@ export interface NewInviteInput {
     teamId: string;
     role: UserRole;
 }
+
+/** Convite já registrado na API e ainda não aceito. */
+export interface PendingInvite extends NewInviteInput {
+    id: string;
+}

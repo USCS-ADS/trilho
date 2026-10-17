@@ -2,9 +2,9 @@
 
 import { PageHeader } from "@/app/components/page-header";
 import type { UserRole } from "@/app/lib/teams/roles";
-import type { NewInviteInput, User } from "@/app/lib/teams/types";
+import type { NewInviteInput, PendingInvite, User } from "@/app/lib/teams/types";
 import { useMemo, useRef, useState } from "react";
-import { changeUserRole } from "../actions";
+import { cancelInviteAction, changeUserRole, inviteUserAction } from "../actions";
 import { InviteUserModal } from "../invite-user-modal";
 import { ProfileCard } from "../profile-card";
 import type { PersonRow } from "../types";
@@ -20,10 +20,12 @@ interface SettingsWorkspaceProps {
     loadError?: string;
     /** Modo demonstração: usuários e times simulados. */
     isDemoData: boolean;
-}
-
-interface PendingInvite extends NewInviteInput {
-    id: string;
+    /** Administrador e líder convidam; membro não vê o botão. */
+    canInvite: boolean;
+    /** Perfis e times que o usuário pode usar ao convidar (líder: só Membro e os times que lidera). */
+    inviteRoles: UserRole[];
+    inviteTeams: { id: string; name: string }[];
+    initialInvites: PendingInvite[];
 }
 
 function initialsFromName(name: string) {
@@ -43,9 +45,13 @@ export function SettingsWorkspace({
     assignableRoles,
     loadError,
     isDemoData,
+    canInvite,
+    inviteRoles,
+    inviteTeams,
+    initialInvites,
 }: SettingsWorkspaceProps) {
     const [users, setUsers] = useState(initialUsers);
-    const [invites, setInvites] = useState<PendingInvite[]>([]);
+    const [invites, setInvites] = useState<PendingInvite[]>(initialInvites);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [actionError, setActionError] = useState<string | undefined>();
     const localIdCounter = useRef(0);
@@ -101,13 +107,40 @@ export function SettingsWorkspace({
         }
     }
 
-    function handleInvite(input: NewInviteInput) {
-        // TODO: o backend ainda não tem endpoint de convite por e-mail (RF01); fica só no cliente.
-        localIdCounter.current += 1;
+    /** Devolve a mensagem de erro (ou `undefined` se enviou) para o modal exibir. */
+    async function handleInvite(input: NewInviteInput): Promise<string | undefined> {
+        const result = await inviteUserAction(input);
+        if (!result.ok) return result.message;
+
+        // Reenvio para o mesmo e-mail/time substitui o convite anterior na API.
+        let invite = result.invite;
+
+        if (!invite) {
+            // Modo demonstração (sem API): o convite existe só no cliente.
+            localIdCounter.current += 1;
+            invite = { ...input, id: `local-invite-${localIdCounter.current}` };
+        }
+
+        const created = invite;
         setInvites((previous) => [
-            ...previous,
-            { ...input, id: `local-invite-${localIdCounter.current}` },
+            ...previous.filter(
+                (item) => !(item.email === created.email && item.teamId === created.teamId),
+            ),
+            created,
         ]);
+        return undefined;
+    }
+
+    async function handleCancelInvite(inviteId: string) {
+        setActionError(undefined);
+
+        const result = await cancelInviteAction(inviteId);
+        if (!result.ok) {
+            setActionError(result.message);
+            return;
+        }
+
+        setInvites((previous) => previous.filter((invite) => invite.id !== inviteId));
     }
 
     return (
@@ -130,7 +163,9 @@ export function SettingsWorkspace({
                         roles={assignableRoles}
                         canManageRoles={currentRole === "admin"}
                         showTeams={isDemoData}
+                        canInvite={canInvite}
                         onInvite={() => setIsInviteOpen(true)}
+                        onCancelInvite={canInvite ? handleCancelInvite : undefined}
                         onRoleChange={handleRoleChange}
                     />
                 </div>
@@ -142,8 +177,8 @@ export function SettingsWorkspace({
                 open={isInviteOpen}
                 onClose={() => setIsInviteOpen(false)}
                 onInvite={handleInvite}
-                teams={teams.map((team) => ({ id: team.id, name: team.name }))}
-                roles={assignableRoles}
+                teams={inviteTeams}
+                roles={inviteRoles}
                 existingEmails={existingEmails}
             />
         </>
