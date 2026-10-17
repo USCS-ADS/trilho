@@ -53,7 +53,7 @@ Clique no título do card. Lá você vê e altera:
 ## Dashboard, notificações e prioridades
 
 - **Dashboard:** visão do sprint (janela de datas), tarefas atrasadas e carga de trabalho por time.
-- **Sino:** avisos como "prazo em até 48 h", tarefas atribuídas e eventos Git. Marque como lidas.
+- **Sino:** avisos como "prazo em até 48 h", tarefa atribuída a você e mudança de status (inclusive as feitas pelo Git). Marque como lidas.
 - **Sugestão de priorização:** o sistema sugere a prioridade pelo **prazo** (vencido → urgente; até 7 dias → alta; até 21 → média; depois → baixa; sem prazo → média), ordena as tarefas abertas e explica o motivo;
   você decide se aplica.
 
