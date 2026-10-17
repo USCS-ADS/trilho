@@ -17,6 +17,8 @@ export function draftToCard(
                 tone: PRIORITY_TONES[input.priority],
             },
         ],
+        priority: input.priority,
+        assigneeId: input.assigneeId || undefined,
         assigneeInitials,
         isOverdue: false,
     };
