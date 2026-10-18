@@ -535,6 +535,9 @@ namespace Trilho.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<int>("TokenVersion")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 

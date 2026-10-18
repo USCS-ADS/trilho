@@ -37,6 +37,7 @@ services:
       Settings__AllowedOrigins__0: "${FRONTEND_ORIGIN:-http://localhost:3000}"
       Settings__PublicApiBaseUrl: "${PUBLIC_API_BASE_URL:-http://localhost:8080}"
       Settings__FrontendBaseUrl: "${FRONTEND_BASE_URL:-http://localhost:3000}"
+      Settings__RateLimiting__AuthPermitLimit: "${AUTH_PERMIT_LIMIT:-10}"
       Settings__Email__Provider: "${EMAIL_PROVIDER:-Log}"
       Settings__Email__Smtp__Host: "${SMTP_HOST:-}"
       Settings__Email__Smtp__Port: "${SMTP_PORT:-587}"

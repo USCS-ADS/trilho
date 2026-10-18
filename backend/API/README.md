@@ -240,6 +240,7 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 | `Settings:FrontendBaseUrl`                    | Base dos links enviados por e-mail (ex: ativação de conta)  |
 | `Settings:Invite:ExpiresDays`                 | Validade do convite, em dias (padrão 7)                   |
 | `Settings:PasswordReset:{ExpiresMinutes,MaxAttempts}` | Validade (15 min) e tentativas (5) do código       |
+| `Settings:RateLimiting:{AuthPermitLimit,WebhookPermitLimit}` | Requisições por minuto e por IP nas rotas de autenticação (10) e nos webhooks (600). Atrás de um front hospedado (Vercel) suba o primeiro (ex.: 120) |
 | `Settings:Login:{MaxFailedAttempts,LockoutMinutes}` | Senhas erradas seguidas que bloqueiam a conta (5) e por quantos minutos (15); a resposta é 429. Redefinir a senha destrava |
 | `Settings:SeedDemo:{Enabled,Password}` | Cria dados de demonstração (time, 3 usuários `@trilho.demo`, 8 tarefas) uma única vez; a senha vem de user-secrets/variável de ambiente. Deixe desligado em produção |
 | `Settings:Email:Provider`                    | `Log` (padrão: só registra no log) ou `Smtp` (envio real)  |

@@ -69,13 +69,13 @@ public class UserController : ControllerBase
     /// <summary>Troca a própria senha (exige a senha atual).</summary>
     [HttpPut]
     [Route("change-password")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ResponseUserLoginJson), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ChangePassword([FromServices] IChangePasswordUseCase useCase, [FromBody] RequestChangePasswordJson request)
     {
-        await useCase.Execute(request);
+        var response = await useCase.Execute(request);
 
-        return NoContent();
+        return Ok(response);
     }
 
     /// <summary>Ativa ou desativa um usuário (desativado não entra no sistema).</summary>

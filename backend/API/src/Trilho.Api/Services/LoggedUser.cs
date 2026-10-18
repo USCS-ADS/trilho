@@ -28,7 +28,10 @@ public class LoggedUser : ILoggedUser
 
         var user = await _repository.GetById(id);
 
-        if (user is null || user.IsActive == false)
+        // Token emitido antes de a senha ser trocada/redefinida (versão menor) deixa de valer. Token antigo sem a claim conta como versão 0.
+        var tokenVersion = int.TryParse(_httpContextAccessor.HttpContext?.User.FindFirst(TokenClaims.TokenVersion)?.Value, out var version) ? version : 0;
+
+        if (user is null || user.IsActive == false || user.TokenVersion != tokenVersion)
         {
             throw new UnauthorizedException(ResourceErrorsMessage.USER_NOT_AUTHENTICATED);
         }

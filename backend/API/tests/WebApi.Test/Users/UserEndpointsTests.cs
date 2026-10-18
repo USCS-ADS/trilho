@@ -154,12 +154,56 @@ public class UserEndpointsTests : IClassFixture<TrilhoWebApplicationFactory>
 
         var response = await client.PutAsJsonAsync("api/User/change-password", new RequestChangePasswordJson { CurrentPassword = user.Password, NewPassword = "Novo@12345" });
 
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var oldLogin = await _factory.CreateClient().PostAsJsonAsync("api/Auth", new RequestUserLoginJson { Email = user.Email, Password = user.Password });
         Assert.Equal(HttpStatusCode.Unauthorized, oldLogin.StatusCode);
 
         await Login(user.Email, "Novo@12345");
+    }
+
+    [Fact]
+    public async Task ChangePassword_DropsOtherSessions_ButTheReturnedTokenKeepsTheCurrentOneAlive()
+    {
+        var (_, user, _) = await CreateUser();
+        var current = await Login(user.Email, user.Password);
+        var other = await Login(user.Email, user.Password);
+
+        var response = await current.PutAsJsonAsync("api/User/change-password", new RequestChangePasswordJson { CurrentPassword = user.Password, NewPassword = "Novo@12345" });
+        var fresh = await response.Content.ReadFromJsonAsync<ResponseUserLoginJson>();
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await other.GetAsync("api/Auth/me")).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await current.GetAsync("api/Auth/me")).StatusCode);
+
+        current.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", fresh!.Token);
+        Assert.Equal(HttpStatusCode.OK, (await current.GetAsync("api/Auth/me")).StatusCode);
+    }
+
+    [Fact]
+    public async Task PasswordReset_DropsExistingSessions()
+    {
+        var (_, user, _) = await CreateUser();
+        var session = await Login(user.Email, user.Password);
+        var anonymous = _factory.CreateClient();
+
+        await anonymous.PostAsJsonAsync("api/PasswordReset/request", new Trilho.Communication.Requests.PasswordReset.RequestPasswordResetJson { Email = user.Email });
+        var code = _factory.Emails.ResetCodeFor(user.Email);
+        var confirm = await anonymous.PostAsJsonAsync("api/PasswordReset/confirm", new Trilho.Communication.Requests.PasswordReset.RequestConfirmPasswordResetJson { Email = user.Email, Code = code, NewPassword = "Redefinida@2026" });
+
+        Assert.Equal(HttpStatusCode.NoContent, confirm.StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await session.GetAsync("api/Auth/me")).StatusCode);
+    }
+
+    [Fact]
+    public async Task AdminSettingAnotherUsersPassword_DropsThatUsersSessions()
+    {
+        var (admin, user, id) = await CreateUser();
+        var session = await Login(user.Email, user.Password);
+
+        var update = await admin.PutAsJsonAsync($"api/User/{id}", new RequestUserJson { Name = "Test User", Email = user.Email, Password = "Admin@Definiu1", Role = Roles.USER });
+
+        Assert.Equal(HttpStatusCode.NoContent, update.StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await session.GetAsync("api/Auth/me")).StatusCode);
     }
 
     [Fact]

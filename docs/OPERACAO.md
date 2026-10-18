@@ -27,6 +27,10 @@ O navegador fala apenas com o front. O front chama a API por `API_URL` (rede int
 - [ ] HTTPS terminado em um proxy reverso (nginx, Caddy, balanceador). Com proxy, `Settings__UseForwardedHeaders=true` para a API
       enxergar IP e esquema reais (necessário para o rate limit por IP e para o HSTS).
 - [ ] `Settings__AllowedOrigins__0` — a origem pública do front (CORS).
+- [ ] `Settings__RateLimiting__AuthPermitLimit` — logins/min **por IP** (padrão 10). Com o front na Vercel (ou outro host que
+      chama a API pelo servidor) todos os usuários chegam com o mesmo IP, então suba para algo como 120. Não confie em
+      `X-Forwarded-For` vindo do front para contornar isso: a API é pública (recebe webhooks) e o cabeçalho seria forjável. A proteção
+      contra força bruta é o **bloqueio por conta** (5 erros → 15 min), que não depende de IP.
 - [ ] `Settings__FrontendBaseUrl` — base dos links enviados por e-mail (ativação de conta).
 - [ ] `Settings__PublicApiBaseUrl` — URL pública da API; é a base do webhook mostrado ao conectar um repositório Git.
 - [ ] Front: `API_URL` apontando para a API e `NODE_ENV=production` (o modo demonstração é ignorado em produção; sem `API_URL`
@@ -60,7 +64,8 @@ O `Dockerfile` e o compose estão descritos no README do backend. (Ainda não fo
 
 - Login: rate limit por IP e **bloqueio da conta** após 5 senhas erradas seguidas por 15 min
   (`Settings__Login__MaxFailedAttempts`, `LockoutMinutes`). Redefinir a senha destrava.
-- JWT válido por 8 h (`Settings__Jwt__ExpiresMinutes`), sem refresh token; conta desativada perde o acesso na hora.
+- JWT válido por 8 h (`Settings__Jwt__ExpiresMinutes`), sem refresh token; conta desativada perde o acesso na hora. Trocar ou
+  redefinir a senha (ou o administrador definir a senha de alguém) derruba as outras sessões: o token carrega a versão da sessão do usuário.
 - Código de redefinição de senha: 15 min, 5 tentativas, uso único.
 - Cabeçalhos de segurança, HSTS e redirecionamento HTTPS na API; webhooks com assinatura verificada.
 
