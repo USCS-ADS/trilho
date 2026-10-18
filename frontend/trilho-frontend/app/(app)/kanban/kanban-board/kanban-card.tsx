@@ -93,6 +93,8 @@ export function KanbanCard({
             style={style}
             {...attributes}
             {...listeners}
+            // O cartão contém um link; role="button" (padrão do dnd-kit) aninharia controles interativos. O arrasto por teclado segue funcionando.
+            role="group"
             className={`${isDragDisabled ? "" : "cursor-grab active:cursor-grabbing"} ${cardClasses(card.isOverdue)} ${
                 isDragging ? "opacity-40" : ""
             }`}

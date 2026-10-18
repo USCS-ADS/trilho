@@ -92,7 +92,7 @@ move a tarefa (PR aberto → Em Revisão, merge → Concluído) e registra no hi
 ```bash
 npm test          # Vitest (unitários: mappers, schemas, regras de senha, filtros do Kanban, mensagens de erro)
 npm run test:watch
-npm run test:e2e  # Playwright (Chromium) em modo demonstração: login, arrastar com mouse, filtros, responsivo
+npm run test:e2e  # Playwright (Chromium) em modo demonstração: login, arrastar com mouse, filtros, perfis, responsivo e acessibilidade (axe, WCAG 2.1 AA)
 ```
 
 Na primeira vez: `npx playwright install chromium`.
