@@ -90,7 +90,7 @@ export function UsersCard({
                     </thead>
                     <tbody className="divide-y divide-trilho-border">
                         {people.map((person) => (
-                            <tr key={person.id}>
+                            <tr key={`${person.status === "invited" ? "invite" : "user"}-${person.id}`}>
                                 <td className="py-3 pr-4">
                                     <div className="flex items-center gap-3">
                                         <Avatar initials={person.initials} />
