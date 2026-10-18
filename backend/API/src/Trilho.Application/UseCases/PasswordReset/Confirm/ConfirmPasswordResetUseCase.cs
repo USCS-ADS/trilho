@@ -48,6 +48,7 @@ public class ConfirmPasswordResetUseCase : IConfirmPasswordResetUseCase
             ?? throw new ErrorOnValidationException([ResourceErrorsMessage.PASSWORD_RESET_CODE_INVALID]);
 
         user.Password = _passwordEncripter.Encrypt(request.NewPassword);
+        user.TokenVersion += 1;
         user.FailedLoginAttempts = 0;
         user.LockoutEnd = null;
         _userRepository.Update(user);

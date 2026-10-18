@@ -18,6 +18,7 @@ public class ChangePasswordAndStatusUseCaseTests
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
     private readonly Mock<IPasswordEncripter> _passwordEncripter = new();
     private readonly Mock<ILoggedUser> _loggedUser = new();
+    private readonly Mock<Trilho.Domain.Security.Tokens.IAcessTokenGenerator> _tokenGenerator = new();
     private readonly Mock<ITeamReadOnlyRepository> _teamRepository = new();
 
     private ChangePasswordUseCase CreateChangePassword(Trilho.Domain.Entities.User user)
@@ -25,7 +26,7 @@ public class ChangePasswordAndStatusUseCaseTests
         _loggedUser.Setup(l => l.User()).ReturnsAsync(user);
         _repository.Setup(r => r.GetById(user.Id)).ReturnsAsync(user);
 
-        return new ChangePasswordUseCase(_repository.Object, _passwordEncripter.Object, _unitOfWork.Object, _loggedUser.Object);
+        return new ChangePasswordUseCase(_repository.Object, _passwordEncripter.Object, _unitOfWork.Object, _loggedUser.Object, _tokenGenerator.Object);
     }
 
     private SetUserStatusUseCase CreateSetStatus(Trilho.Domain.Entities.User loggedUser)
@@ -42,9 +43,13 @@ public class ChangePasswordAndStatusUseCaseTests
         _passwordEncripter.Setup(p => p.Verify("Old@1234", user.Password)).Returns(true);
         _passwordEncripter.Setup(p => p.Encrypt("New@1234")).Returns("new-hash");
 
-        await CreateChangePassword(user).Execute(new RequestChangePasswordJson { CurrentPassword = "Old@1234", NewPassword = "New@1234" });
+        _tokenGenerator.Setup(t => t.Generate(user)).Returns("fresh-token");
+
+        var response = await CreateChangePassword(user).Execute(new RequestChangePasswordJson { CurrentPassword = "Old@1234", NewPassword = "New@1234" });
 
         Assert.Equal("new-hash", user.Password);
+        Assert.Equal(1, user.TokenVersion);
+        Assert.Equal("fresh-token", response.Token);
         _unitOfWork.Verify(u => u.Commit(), Times.Once);
     }
 

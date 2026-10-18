@@ -1,8 +1,10 @@
 using FluentValidation.Results;
 using Trilho.Communication.Requests.Users;
+using Trilho.Communication.Responses.Users;
 using Trilho.Domain.Repositories;
 using Trilho.Domain.Repositories.Users;
 using Trilho.Domain.Security.Cryptography;
+using Trilho.Domain.Security.Tokens;
 using Trilho.Domain.Services.LoggedUser;
 using Trilho.Exception;
 using Trilho.Exception.ExceptionBase;
@@ -14,20 +16,23 @@ public class ChangePasswordUseCase : IChangePasswordUseCase
     private readonly IPasswordEncripter _passwordEncripter;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILoggedUser _loggedUser;
+    private readonly IAcessTokenGenerator _tokenGenerator;
 
     public ChangePasswordUseCase(
         IUserUpdateOnlyRepository repository,
         IPasswordEncripter passwordEncripter,
         IUnitOfWork unitOfWork,
-        ILoggedUser loggedUser)
+        ILoggedUser loggedUser,
+        IAcessTokenGenerator tokenGenerator)
     {
         _repository = repository;
         _passwordEncripter = passwordEncripter;
         _unitOfWork = unitOfWork;
         _loggedUser = loggedUser;
+        _tokenGenerator = tokenGenerator;
     }
 
-    public async Task Execute(RequestChangePasswordJson request)
+    public async Task<ResponseUserLoginJson> Execute(RequestChangePasswordJson request)
     {
         var loggedUser = await _loggedUser.User();
 
@@ -48,9 +53,12 @@ public class ChangePasswordUseCase : IChangePasswordUseCase
         }
 
         user.Password = _passwordEncripter.Encrypt(request.NewPassword);
+        user.TokenVersion += 1;
 
         _repository.Update(user);
 
         await _unitOfWork.Commit();
+
+        return new ResponseUserLoginJson { Name = user.Name, Token = _tokenGenerator.Generate(user) };
     }
 }

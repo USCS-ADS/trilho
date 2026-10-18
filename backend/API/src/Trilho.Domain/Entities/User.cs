@@ -14,5 +14,8 @@ public class User
 
     /// <summary>Enquanto estiver no futuro (UTC), o login da conta é recusado, mesmo com a senha certa.</summary>
     public DateTime? LockoutEnd { get; set; }
+
+    /// <summary>Versão das sessões: o token só vale se carregar este número. Sobe ao trocar ou redefinir a senha, derrubando as sessões antigas.</summary>
+    public int TokenVersion { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

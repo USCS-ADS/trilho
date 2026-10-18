@@ -135,9 +135,13 @@ export async function deleteUser(userId: string, token: string) {
     await apiFetch<undefined>(`/api/User/${encodeURIComponent(userId)}`, { method: "DELETE", token });
 }
 
-/** PUT /api/User/change-password — troca a senha de quem está logado, exigindo a senha atual. */
-export async function changePassword(input: RequestChangePasswordJson, token: string) {
-    if (isMockMode) return;
+/**
+ * PUT /api/User/change-password — troca a senha de quem está logado, exigindo a senha atual.
+ * A API derruba as demais sessões e devolve um token novo para a sessão atual continuar valendo.
+ */
+export async function changePassword(input: RequestChangePasswordJson, token: string): Promise<string | undefined> {
+    if (isMockMode) return undefined;
 
-    await apiFetch<undefined>("/api/User/change-password", { method: "PUT", body: input, token });
+    const response = await apiFetch<{ token: string }>("/api/User/change-password", { method: "PUT", body: input, token });
+    return response?.token;
 }

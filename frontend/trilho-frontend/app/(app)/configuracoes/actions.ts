@@ -11,6 +11,7 @@ import {
     setUserActive,
     updateUser,
 } from "@/app/lib/api/users";
+import { createSession } from "@/app/lib/session";
 import { verifySession } from "@/app/lib/session/dal";
 import { validate } from "@/app/lib/validation";
 import { revalidatePath } from "next/cache";
@@ -184,10 +185,13 @@ export async function changeOwnPasswordAction(input: unknown): Promise<ActionRes
     if (!result.success) return { ok: false, message: Object.values(result.errors)[0] };
 
     try {
-        await changePassword(
+        const freshToken = await changePassword(
             { currentPassword: result.data.currentPassword, newPassword: result.data.newPassword },
             session.token,
         );
+
+        // As outras sessões caíram; o token novo mantém esta sessão (e o cookie) válida.
+        if (freshToken) await createSession(freshToken);
     } catch (error) {
         return { ok: false, message: toUserMessage(error) };
     }
