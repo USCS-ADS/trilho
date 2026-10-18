@@ -1,6 +1,5 @@
 "use client";
 
-import { controlClasses } from "@/app/components/form-field";
 import { PRIORITY_LABELS, PRIORITIES } from "@/app/lib/tasks/meta";
 import type { TaskPriority } from "@/app/lib/tasks/types";
 import { EMPTY_FILTERS, NO_ASSIGNEE, hasActiveFilters, type BoardFilters as FiltersState } from "../kanban-board/filter-columns";
@@ -14,7 +13,8 @@ interface BoardFiltersProps {
     totalCount: number;
 }
 
-const FIELD = `${controlClasses(false)} w-auto py-1.5 text-sm`;
+const FIELD =
+    "rounded-lg border border-trilho-border bg-trilho-surface-2 px-3 py-1.5 text-sm text-trilho-text focus:border-trilho-accent focus:outline-none";
 
 /** Busca por título e filtros de responsável e prioridade (só no cliente: o quadro já está carregado). */
 export function BoardFilters({ filters, onChange, members, visibleCount, totalCount }: BoardFiltersProps) {
