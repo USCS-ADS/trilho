@@ -3,12 +3,12 @@ import { ReactNode } from "react";
 export type BadgeTone = "danger" | "warning" | "neutral" | "info" | "accent" | "ai" | "success";
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
-    danger: "bg-trilho-danger/15 text-trilho-danger",
+    danger: "bg-trilho-danger/15 text-trilho-danger-soft",
     warning: "bg-trilho-warning/15 text-trilho-warning",
     neutral: "bg-trilho-surface-3 text-trilho-dim",
     info: "bg-trilho-surface-3 text-trilho-text",
-    accent: "bg-trilho-accent/15 text-trilho-accent",
-    ai: "bg-trilho-accent/15 text-trilho-accent",
+    accent: "bg-trilho-accent/15 text-trilho-accent-soft",
+    ai: "bg-trilho-accent/15 text-trilho-accent-soft",
     success: "bg-trilho-success/15 text-trilho-success",
 };
 
