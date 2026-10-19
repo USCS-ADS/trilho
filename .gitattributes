@@ -1,0 +1,5 @@
+# Scripts e configs que rodam em Linux precisam de fim de linha LF, mesmo quando clonados no Windows.
+*.sh text eol=lf
+deploy/Caddyfile text eol=lf
+deploy/docker-compose.prod.yml text eol=lf
+deploy/.env.prod.example text eol=lf

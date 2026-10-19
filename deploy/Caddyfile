@@ -1,0 +1,7 @@
+# HTTPS automático (Let's Encrypt) para o host público da API. API_HOST vem do .env (ex.: trilho-api.eastus.cloudapp.azure.com).
+{$API_HOST} {
+	encode zstd gzip
+
+	# A API não é publicada na VM: só o Caddy fala com ela, pela rede interna do Compose.
+	reverse_proxy api:8080
+}

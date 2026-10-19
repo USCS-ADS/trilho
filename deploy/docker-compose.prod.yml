@@ -1,0 +1,77 @@
+# Produção numa VM Linux pequena (1 GB de RAM): API (imagem publicada no GHCR) + Caddy (HTTPS automático).
+# O MySQL fica FORA da VM (Azure Database for MySQL Flexible Server), então não há serviço de banco aqui.
+#
+#   cp .env.prod.example .env      # preencha (o arquivo .env nunca vai para o Git)
+#   docker compose pull && docker compose up -d
+#
+# Variáveis marcadas com :? são obrigatórias: o Compose recusa subir sem elas.
+name: trilho
+
+services:
+  api:
+    image: ${API_IMAGE:-ghcr.io/uscs-ads/trilho-api:latest}
+    restart: unless-stopped
+    mem_limit: 450m
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # .NET mais econômico em memória (a VM tem pouca RAM).
+      DOTNET_GCConserveMemory: "5"
+      ConnectionStrings__Connection: "Server=${DB_HOST:?defina DB_HOST};Port=${DB_PORT:-3306};Database=${DB_NAME:-trilhodb};Uid=${DB_USER:?defina DB_USER};Pwd=${DB_PASSWORD:?defina DB_PASSWORD};SslMode=Required"
+      Settings__Jwt__SigningKey: "${JWT_SIGNING_KEY:?defina JWT_SIGNING_KEY (mínimo 32 caracteres)}"
+      Settings__SeedAdmin__Name: "${SEED_ADMIN_NAME:-Administrador}"
+      Settings__SeedAdmin__Email: "${SEED_ADMIN_EMAIL:?defina SEED_ADMIN_EMAIL}"
+      Settings__SeedAdmin__Password: "${SEED_ADMIN_PASSWORD:?defina SEED_ADMIN_PASSWORD}"
+      Settings__AllowedOrigins__0: "${FRONTEND_ORIGIN:?defina FRONTEND_ORIGIN}"
+      Settings__FrontendBaseUrl: "${FRONTEND_BASE_URL:?defina FRONTEND_BASE_URL}"
+      Settings__PublicApiBaseUrl: "https://${API_HOST:?defina API_HOST}"
+      # Todos os usuários chegam pela Vercel com o mesmo IP: limite alto por IP; a proteção real é o bloqueio por conta.
+      Settings__RateLimiting__AuthPermitLimit: "${AUTH_PERMIT_LIMIT:-120}"
+      Settings__Email__Provider: "${EMAIL_PROVIDER:-Log}"
+      Settings__Email__Smtp__Host: "${SMTP_HOST:-}"
+      Settings__Email__Smtp__Port: "${SMTP_PORT:-587}"
+      Settings__Email__Smtp__EnableSsl: "${SMTP_ENABLE_SSL:-true}"
+      Settings__Email__Smtp__UserName: "${SMTP_USERNAME:-}"
+      Settings__Email__Smtp__Password: "${SMTP_PASSWORD:-}"
+      Settings__Email__Smtp__FromAddress: "${SMTP_FROM_ADDRESS:-}"
+      Settings__Email__Smtp__FromName: "${SMTP_FROM_NAME:-Trilho}"
+    volumes:
+      # Chaves do Data Protection (cifram os segredos de webhook): precisam sobreviver a reinícios e atualizações.
+      - trilho-keys:/keys
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health HTTP/1.0\\r\\n\\r\\n' >&3 && head -n1 <&3 | grep -q ' 200 '"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      API_HOST: "${API_HOST:?defina API_HOST}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  trilho-keys:
+  caddy-data:
+  caddy-config:

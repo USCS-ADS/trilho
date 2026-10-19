@@ -3,9 +3,11 @@ name: Backend CI
 on:
   push:
     branches: [main]
-    paths: ["backend/API/**", ".github/workflows/backend-ci.yml"]
+    paths: ["backend/API/**", "deploy/**", ".github/workflows/backend-ci.yml"]
   pull_request:
-    paths: ["backend/API/**", ".github/workflows/backend-ci.yml"]
+    paths: ["backend/API/**", "deploy/**", ".github/workflows/backend-ci.yml"]
+  # Permite publicar a imagem a partir de qualquer branch (ex.: primeiro deploy antes de mesclar o PR).
+  workflow_dispatch:
 
 defaults:
   run:
@@ -40,5 +42,51 @@ jobs:
     needs: build-and-test
     steps:
       - uses: actions/checkout@v4
+      # O diretório de trabalho padrão já é backend/API (o contexto do Dockerfile), então o contexto é ".".
       - name: Build da imagem (sem publicar)
-        run: docker build -t trilho-api:ci backend/API
+        run: docker build -t trilho-api:ci .
+
+  compose-config:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar o Compose de produção
+        run: docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env.prod.example config --quiet
+
+  publish-image:
+    # Publica no GitHub Container Registry: na main e, sob demanda, em qualquer branch.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    needs: [build-and-test, docker-image, compose-config]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Nome e tags da imagem
+        id: meta
+        working-directory: .
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/trilho-api"
+          branch="${GITHUB_REF_NAME//\//-}"
+          tags="${image}:sha-${GITHUB_SHA::7},${image}:${branch}"
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then tags="${tags},${image}:latest"; fi
+          echo "tags=${tags}" >> "$GITHUB_OUTPUT"
+          echo "Tags: ${tags}"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: backend/API
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
