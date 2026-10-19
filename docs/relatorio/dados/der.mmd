@@ -1,0 +1,108 @@
+erDiagram
+    Users |o--o{ GitRepositories : "ConnectedById"
+    Teams ||--o{ GitRepositories : "TeamId"
+    Users |o--o{ Invites : "InvitedById"
+    Teams ||--o{ Invites : "TeamId"
+    Tasks |o--o{ Notifications : "TaskId"
+    Users ||--o{ Notifications : "UserId"
+    Users ||--o{ PasswordResetRequests : "UserId"
+    GitRepositories ||--o{ PendingGitEvents : "RepositoryId"
+    Users |o--o{ Subtasks : "AssigneeId"
+    Tasks ||--o{ Subtasks : "TaskId"
+    Users |o--o{ TaskActivities : "ActorId"
+    Tasks ||--o{ TaskActivities : "TaskId"
+    Users |o--o{ TaskComments : "AuthorId"
+    Tasks ||--o{ TaskComments : "TaskId"
+    Users |o--o{ Tasks : "AssigneeId"
+    Users |o--o{ Tasks : "CreatedById"
+    Teams ||--o{ Tasks : "TeamId"
+    Users ||--o{ Teams : "LeaderId"
+    Teams ||--o{ TeamMembers : "TeamId"
+    Users ||--o{ TeamMembers : "UserId"
+    GitRepositories {
+        bigint Id PK
+        bigint ConnectedById FK
+        varchar FullName
+        varchar Provider
+        varchar Status
+        bigint TeamId FK
+    }
+    Invites {
+        bigint Id PK
+        varchar Email
+        varchar FullName
+        bigint InvitedById FK
+        varchar Role
+        bigint TeamId FK
+    }
+    Notifications {
+        bigint Id PK
+        datetime CreatedAt
+        varchar Message
+        bigint TaskId FK
+        varchar Type
+        bigint UserId FK
+    }
+    PasswordResetRequests {
+        bigint Id PK
+        int Attempts
+        varchar CodeHash
+        datetime CreatedAt
+        bigint UserId FK
+    }
+    PendingGitEvents {
+        bigint Id PK
+        int Attempts
+        varchar EventType
+        varchar LastError
+        bigint RepositoryId FK
+    }
+    Subtasks {
+        bigint Id PK
+        bigint AssigneeId FK
+        bool IsDone
+        bigint TaskId FK
+        varchar Title
+    }
+    TaskActivities {
+        bigint Id PK
+        bigint ActorId FK
+        datetime CreatedAt
+        varchar FromValue
+        bigint TaskId FK
+        varchar Type
+    }
+    TaskComments {
+        bigint Id PK
+        bigint AuthorId FK
+        varchar Body
+        datetime CreatedAt
+        bigint TaskId FK
+    }
+    Tasks {
+        bigint Id PK
+        bigint AssigneeId FK
+        bigint CreatedById FK
+        varchar Priority
+        varchar Status
+        bigint TeamId FK
+        varchar Title
+    }
+    Teams {
+        bigint Id PK
+        datetime CreatedAt
+        varchar Description
+        bigint LeaderId FK
+        varchar Name
+    }
+    TeamMembers {
+        bigint TeamId PK,FK
+        bigint UserId PK,FK
+        datetime JoinedAt
+    }
+    Users {
+        bigint Id PK
+        varchar Email
+        varchar Name
+        varchar Role
+    }

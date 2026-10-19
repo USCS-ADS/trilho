@@ -188,3 +188,48 @@ export async function fetchAssigneeSuggestion(
         return undefined;
     }
 }
+
+/** PUT /api/Task/{id} — qualquer membro do time edita (o status só muda pelo "mover"). */
+export async function updateTask(
+    taskId: string,
+    changes: {
+        title: string;
+        description: string;
+        assigneeId?: string;
+        dueDate?: string;
+        priority: string;
+    },
+    token: string,
+) {
+    await apiFetch<undefined>(`/api/Task/${encodeURIComponent(taskId)}`, {
+        method: "PUT",
+        body: {
+            title: changes.title,
+            description: changes.description,
+            assigneeId: changes.assigneeId ? Number(changes.assigneeId) : null,
+            dueDate: changes.dueDate ?? null,
+            priority: changes.priority,
+        },
+        token,
+    });
+}
+
+/** DELETE /api/Task/{id} — administrador ou líder do time; 409 com subtarefas pendentes. */
+export async function deleteTask(taskId: string, token: string) {
+    await apiFetch<undefined>(`/api/Task/${encodeURIComponent(taskId)}`, { method: "DELETE", token });
+}
+
+export async function deleteSubtask(taskId: string, subtaskId: string, token: string) {
+    await apiFetch<undefined>(
+        `/api/Task/${encodeURIComponent(taskId)}/subtask/${encodeURIComponent(subtaskId)}`,
+        { method: "DELETE", token },
+    );
+}
+
+/** O autor apaga o próprio comentário; líder do time e administrador moderam. */
+export async function deleteComment(taskId: string, commentId: string, token: string) {
+    await apiFetch<undefined>(
+        `/api/Task/${encodeURIComponent(taskId)}/comment/${encodeURIComponent(commentId)}`,
+        { method: "DELETE", token },
+    );
+}

@@ -6,7 +6,7 @@ export const connectRepositorySchema = z.object({
     fullName: z
         .string()
         .trim()
-        .regex(/^[\w.-]+\/[\w.-]+$/, { error: "Use o formato dono/repositório." }),
+        .regex(/^[\w.-]+(\/[\w.-]+)+$/, { error: "Use o formato dono/repositório." }),
     teamId: z.string().min(1, { error: "Selecione o time responsável." }),
 });
 

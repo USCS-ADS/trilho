@@ -1,8 +1,15 @@
 import { AuthPanel } from "@/app/components/auth-panel";
 import { Stepper } from "@/app/components/stepper";
+import { redirect } from "next/navigation";
+import { readResetFlow } from "../flow";
 import { NewPasswordForm } from "./new-password-form";
 
-export default function NewPasswordPage() {
+export default async function NewPasswordPage() {
+  // O código precisa ter sido conferido no passo 2.
+  const { email, code } = await readResetFlow();
+  if (!email) redirect("/reset-password");
+  if (!code) redirect("/reset-password/verify-code");
+
   return (
     <main className="flex min-h-screen flex-col bg-trilho-bg md:flex-row">
       <AuthPanel

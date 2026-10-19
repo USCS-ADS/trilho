@@ -1,10 +1,8 @@
 import { AuthPanel } from "@/app/components/auth-panel";
 import { Stepper } from "@/app/components/stepper";
+import { redirect } from "next/navigation";
+import { readResetFlow } from "../flow";
 import { VerifyCodeForm } from "./verify-code-form";
-
-// TODO: obter o e-mail real da solicitação de redefinição de senha (via
-// token/query da URL ou sessão) e passar para maskEmail abaixo.
-const requestedEmail = "";
 
 /** Mascara um e-mail para exibição (ex: "camila@nexus.com" -> "c****a@nexus.com"). */
 function maskEmail(email: string) {
@@ -18,8 +16,10 @@ function maskEmail(email: string) {
   return `${visibleStart}${masked}${visibleEnd}@${domain}`;
 }
 
-export default function VerifyResetCodePage() {
-  const maskedEmail = maskEmail(requestedEmail);
+export default async function VerifyResetCodePage() {
+  // Sem o passo 1 não há e-mail para confirmar: volta ao início.
+  const { email } = await readResetFlow();
+  if (!email) redirect("/reset-password");
 
   return (
     <main className="flex min-h-screen flex-col bg-trilho-bg md:flex-row">
@@ -36,9 +36,7 @@ export default function VerifyResetCodePage() {
             Confirme o código
           </h1>
           <p className="mb-6 text-sm text-trilho-dim">
-            {maskedEmail
-              ? `Enviado para ${maskedEmail}`
-              : "Enviamos um código para o seu e-mail."}
+            Se o e-mail {maskEmail(email)} estiver cadastrado, o código já está a caminho.
           </p>
 
           <VerifyCodeForm />

@@ -309,4 +309,16 @@
   <data name="GIT_WEBHOOK_PAYLOAD_INVALID" xml:space="preserve">
     <value>The webhook payload is invalid.</value>
   </data>
+  <data name="CURRENT_PASSWORD_REQUIRED" xml:space="preserve">
+    <value>The current password is required.</value>
+  </data>
+  <data name="CURRENT_PASSWORD_INVALID" xml:space="preserve">
+    <value>The current password is incorrect.</value>
+  </data>
+  <data name="CANNOT_DEACTIVATE_YOURSELF" xml:space="preserve">
+    <value>you cannot deactivate your own account</value>
+  </data>
+  <data name="LOGIN_LOCKED" xml:space="preserve">
+    <value>Too many failed login attempts. Try again in a few minutes or reset your password.</value>
+  </data>
 </root>

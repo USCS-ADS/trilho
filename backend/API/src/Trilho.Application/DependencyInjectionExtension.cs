@@ -50,7 +50,9 @@ using Trilho.Application.UseCases.Teams.RemoveMember;
 using Trilho.Application.UseCases.Teams.Restore;
 using Trilho.Application.UseCases.Teams.Shared;
 using Trilho.Application.UseCases.Teams.Update;
+using Trilho.Application.UseCases.Users.ChangePassword;
 using Trilho.Application.UseCases.Users.Create;
+using Trilho.Application.UseCases.Users.SetStatus;
 using Trilho.Application.UseCases.Users.Delete;
 using Trilho.Application.UseCases.Users.GetAll;
 using Trilho.Application.UseCases.Users.GetById;
@@ -85,6 +87,8 @@ public static class DependencyInjectionExtension
         services.AddScoped<IGetAllUserUseCase, GetAllUserUseCase>();
         services.AddScoped<IGetByIdUserUseCase, GetByIdUserUseCase>();
         services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+        services.AddScoped<IChangePasswordUseCase, ChangePasswordUseCase>();
+        services.AddScoped<ISetUserStatusUseCase, SetUserStatusUseCase>();
         services.AddScoped<ILoginUseCase, LoginUseCase>();
         services.AddScoped<IGetProfileUseCase, GetProfileUseCase>();
 

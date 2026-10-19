@@ -5,7 +5,7 @@ import { Card, CardTitle } from "@/app/components/card";
 import { CheckIcon } from "@/app/components/icons";
 import { ProgressBar } from "@/app/components/progress-bar";
 import { FormEvent, useRef, useState } from "react";
-import { createSubtaskAction, toggleSubtaskAction } from "../actions";
+import { createSubtaskAction, deleteSubtaskAction, toggleSubtaskAction } from "../actions";
 
 export interface SubtaskView {
     id: string;
@@ -50,6 +50,22 @@ export function SubtasksCard({ taskId, initialSubtasks }: SubtasksCardProps) {
                     subtask.id === subtaskId ? { ...subtask, done: current.done } : subtask,
                 ),
             );
+            setError(result.message);
+        }
+    }
+
+    async function handleDelete(subtaskId: string) {
+        const removed = subtasks.find((subtask) => subtask.id === subtaskId);
+        if (!removed) return;
+
+        setError(undefined);
+        // Otimista: some da lista e volta se o servidor recusar.
+        setSubtasks((previous) => previous.filter((subtask) => subtask.id !== subtaskId));
+
+        const result = await deleteSubtaskAction(taskId, subtaskId);
+
+        if (!result.ok) {
+            setSubtasks((previous) => [...previous, removed]);
             setError(result.message);
         }
     }
@@ -143,6 +159,15 @@ export function SubtasksCard({ taskId, initialSubtasks }: SubtasksCardProps) {
                                 {subtask.assigneeInitials}
                             </span>
                         )}
+
+                        <button
+                            type="button"
+                            onClick={() => void handleDelete(subtask.id)}
+                            aria-label={`Excluir a subtarefa ${subtask.title}`}
+                            className="shrink-0 text-xs text-trilho-dim hover:text-trilho-danger hover:underline"
+                        >
+                            Excluir
+                        </button>
                     </li>
                 ))}
             </ul>

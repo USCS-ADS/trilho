@@ -46,6 +46,7 @@ export function userFromApi(dto: ResponseUserJson): User {
         initials: initialsOf(dto.name),
         email: dto.email,
         role: roleFromApi(dto.role),
+        isActive: dto.isActive ?? true,
     };
 }
 
@@ -61,6 +62,7 @@ export function teamFromApi(dto: ResponseTeamJson): TeamWithMembers {
         members,
         tasksInProgress: dto.openTasks,
         workload: dto.workloadPercent,
+        isArchived: dto.isArchived,
     };
 }
 

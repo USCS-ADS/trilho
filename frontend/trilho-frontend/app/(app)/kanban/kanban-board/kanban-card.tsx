@@ -52,9 +52,15 @@ export function KanbanCardOverlay({ card }: { card: KanbanCardData }) {
 }
 
 /** O card real dentro de uma coluna — arrastável via `useSortable`; o título abre o detalhe. */
-export function KanbanCard({ card }: { card: KanbanCardData }) {
+export function KanbanCard({
+    card,
+    isDragDisabled = false,
+}: {
+    card: KanbanCardData;
+    isDragDisabled?: boolean;
+}) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-        useSortable({ id: card.id });
+        useSortable({ id: card.id, disabled: isDragDisabled });
     const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
     const style = {
@@ -87,7 +93,9 @@ export function KanbanCard({ card }: { card: KanbanCardData }) {
             style={style}
             {...attributes}
             {...listeners}
-            className={`cursor-grab active:cursor-grabbing ${cardClasses(card.isOverdue)} ${
+            // O cartão contém um link; role="button" (padrão do dnd-kit) aninharia controles interativos. O arrasto por teclado segue funcionando.
+            role="group"
+            className={`${isDragDisabled ? "" : "cursor-grab active:cursor-grabbing"} ${cardClasses(card.isOverdue)} ${
                 isDragging ? "opacity-40" : ""
             }`}
         >

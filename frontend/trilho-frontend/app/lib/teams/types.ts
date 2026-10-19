@@ -6,6 +6,8 @@ export interface User {
     initials: string;
     email: string;
     role: UserRole;
+    /** Usuário desativado não entra no sistema; `undefined` (modo demonstração) = ativo. */
+    isActive?: boolean;
 }
 
 export interface Team {
@@ -18,6 +20,8 @@ export interface Team {
     tasksInProgress: number;
     /** Carga de trabalho em % da capacidade estimada (RF08). Mockado, idem acima. */
     workload: number;
+    /** Times arquivados só aparecem para o administrador, marcados como tal. */
+    isArchived?: boolean;
 }
 
 export interface TeamWithMembers extends Team {
@@ -37,4 +41,9 @@ export interface NewInviteInput {
     email: string;
     teamId: string;
     role: UserRole;
+}
+
+/** Convite já registrado na API e ainda não aceito. */
+export interface PendingInvite extends NewInviteInput {
+    id: string;
 }

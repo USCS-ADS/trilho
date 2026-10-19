@@ -6,10 +6,11 @@ import { Card, CardTitle } from "@/app/components/card";
 import { useCurrentUser } from "@/app/components/current-user";
 import { Textarea } from "@/app/components/textarea";
 import { FormEvent, useRef, useState } from "react";
-import { createCommentAction } from "../actions";
+import { createCommentAction, deleteCommentAction } from "../actions";
 
 export interface CommentView {
     id: string;
+    authorId?: string;
     authorName: string;
     authorInitials: string;
     body: string;
@@ -18,9 +19,13 @@ export interface CommentView {
 interface CommentsCardProps {
     taskId: string;
     initialComments: CommentView[];
+    /** Para o autor poder apagar o próprio comentário. */
+    currentUserId: string;
+    /** Líder do time e administrador moderam (apagam comentários de outros). */
+    canModerate: boolean;
 }
 
-export function CommentsCard({ taskId, initialComments }: CommentsCardProps) {
+export function CommentsCard({ taskId, initialComments, currentUserId, canModerate }: CommentsCardProps) {
     const currentUser = useCurrentUser();
     const [comments, setComments] = useState(initialComments);
     const [draft, setDraft] = useState("");
@@ -50,12 +55,28 @@ export function CommentsCard({ taskId, initialComments }: CommentsCardProps) {
             ...previous,
             {
                 id: result.comment?.id ?? `local-comment-${localIdCounter.current}`,
+                authorId: currentUserId,
                 authorName: result.comment?.authorName ?? currentUser?.name ?? "Você",
                 authorInitials: currentUser?.initials ?? "US",
                 body,
             },
         ]);
         setDraft("");
+    }
+
+    async function handleDelete(commentId: string) {
+        const removed = comments.find((comment) => comment.id === commentId);
+        if (!removed) return;
+
+        setError(undefined);
+        setComments((previous) => previous.filter((comment) => comment.id !== commentId));
+
+        const result = await deleteCommentAction(taskId, commentId);
+
+        if (!result.ok) {
+            setComments((previous) => [...previous, removed].sort((a, b) => Number(a.id) - Number(b.id) || 0));
+            setError(result.message);
+        }
     }
 
     return (
@@ -70,9 +91,21 @@ export function CommentsCard({ taskId, initialComments }: CommentsCardProps) {
                         <li key={comment.id} className="flex items-start gap-3">
                             <Avatar initials={comment.authorInitials} />
                             <div className="min-w-0 flex-1 rounded-lg bg-trilho-surface-2 px-4 py-3">
-                                <p className="text-sm font-semibold text-trilho-text">
-                                    {comment.authorName}
-                                </p>
+                                <div className="flex items-start justify-between gap-3">
+                                    <p className="text-sm font-semibold text-trilho-text">
+                                        {comment.authorName}
+                                    </p>
+                                    {(canModerate || comment.authorId === currentUserId) && (
+                                        <button
+                                            type="button"
+                                            onClick={() => void handleDelete(comment.id)}
+                                            aria-label={`Excluir comentário de ${comment.authorName}`}
+                                            className="shrink-0 text-xs text-trilho-dim hover:text-trilho-danger hover:underline"
+                                        >
+                                            Excluir
+                                        </button>
+                                    )}
+                                </div>
                                 <p className="mt-1 text-sm text-trilho-text">{comment.body}</p>
                             </div>
                         </li>

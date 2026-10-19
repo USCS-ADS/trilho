@@ -44,6 +44,8 @@ export function taskToCard(
         id: task.id,
         title: task.title,
         tags: getCardTags(task, today),
+        priority: task.priority,
+        assigneeId: task.assigneeId,
         assigneeInitials: task.assigneeId ? initialsByUserId[task.assigneeId] : undefined,
         isOverdue: isOverdue(task, today),
         href: `/kanban/${task.id}`,

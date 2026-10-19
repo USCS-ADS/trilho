@@ -8,5 +8,5 @@ export interface PersonRow {
     email: string;
     role: UserRole;
     teamNames: string[];
-    status: "active" | "invited";
+    status: "active" | "inactive" | "invited";
 }

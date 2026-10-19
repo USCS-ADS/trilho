@@ -77,6 +77,7 @@ internal class UpdateUserUseCase : IUpdateUserUseCase
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
             user.Password = _passwordEncripter.Encrypt(request.Password);
+            user.TokenVersion += 1;
         }
 
         _repository.Update(user);

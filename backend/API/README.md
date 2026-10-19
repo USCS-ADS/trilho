@@ -90,6 +90,8 @@ Todas as rotas exigem `Authorization: Bearer <token>`, exceto as marcadas como a
 | GET    | `/api/User/{id}` | autenticado            | Busca um usuário por id          | 200       | 404                                   |
 | PUT    | `/api/User/{id}` | próprio ou admin       | Atualiza (perfil só pelo admin)  | 204       | 400 / 403 / 404                       |
 | DELETE | `/api/User/{id}` | administrador          | Remove um usuário                | 204       | 403 / 404 / 409 (a si mesmo)          |
+| PUT    | `/api/User/change-password` | autenticado | Troca a própria senha (exige a atual) | 204 | 400 (senha atual incorreta/fraca) |
+| PUT    | `/api/User/{id}/status` | administrador | Ativa/desativa (`{"isActive": bool}`); desativado não entra | 204 | 404 / 409 (a si mesmo ou líder de time) |
 | POST   | `/api/Team`                  | administrador          | Cria um time (líder vira membro)        | 201       | 400 / 404 / 409 (líder já lidera outro) |
 | GET    | `/api/Team`                  | autenticado            | Lista times (admin: todos; demais: os próprios) | 200 / 204 | —                       |
 | GET    | `/api/Team/{id}`             | admin ou membro        | Detalhe com líder e membros             | 200       | 403 / 404                             |
@@ -234,10 +236,15 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 |-------------------------------------------------|-----------------------------------------------------------|
 | `ConnectionStrings:Connection`                 | Connection string do MySQL                                |
 | `Settings:Jwt:SigningKey`                      | Chave de assinatura do JWT (obrigatória, ≥ 32 caracteres) |
-| `Settings:Jwt:ExpiresMinutes`                  | Expiração do token, em minutos                            |
+| `Settings:Jwt:ExpiresMinutes`                  | Validade do token, em minutos (padrão 480 = 8 h). Não há refresh token: ao expirar o front limpa a sessão e volta ao login. Desativar a conta invalida o token na hora |
 | `Settings:FrontendBaseUrl`                    | Base dos links enviados por e-mail (ex: ativação de conta)  |
 | `Settings:Invite:ExpiresDays`                 | Validade do convite, em dias (padrão 7)                   |
 | `Settings:PasswordReset:{ExpiresMinutes,MaxAttempts}` | Validade (15 min) e tentativas (5) do código       |
+| `Settings:RateLimiting:{AuthPermitLimit,WebhookPermitLimit}` | Requisições por minuto e por IP nas rotas de autenticação (10) e nos webhooks (600). Atrás de um front hospedado (Vercel) suba o primeiro (ex.: 120) |
+| `Settings:Login:{MaxFailedAttempts,LockoutMinutes}` | Senhas erradas seguidas que bloqueiam a conta (5) e por quantos minutos (15); a resposta é 429. Redefinir a senha destrava |
+| `Settings:SeedDemo:{Enabled,Password}` | Cria dados de demonstração (time, 3 usuários `@trilho.demo`, 8 tarefas) uma única vez; a senha vem de user-secrets/variável de ambiente. Deixe desligado em produção |
+| `Settings:Email:Provider`                    | `Log` (padrão: só registra no log) ou `Smtp` (envio real)  |
+| `Settings:Email:Smtp:{Host,Port,UserName,Password,EnableSsl,FromAddress,FromName}` | Servidor SMTP; senha via user-secrets/variável de ambiente |
 | `Settings:Email:LogBody`                      | Em dev, registra o corpo do e-mail (link/código) no log   |
 | `Settings:PublicApiBaseUrl`                   | Base pública da API usada na URL do webhook exibida ao conectar |
 | `Settings:Git:{MaxAttempts,RetryIntervalSeconds}` | Tentativas por evento (5) e intervalo do reprocessamento (60 s) |
@@ -252,7 +259,7 @@ Defina `Settings__Jwt__SigningKey` no ambiente: a API valida a chave ao montar o
 
 ## Possíveis evoluções
 
-- Envio real de e-mail (SMTP/API): hoje o `IEmailSender` apenas registra no log.
+- Provedores de e-mail por API (SendGrid/Resend) como novas implementações de `IEmailSender`.
 - Trocar o motor de priorização por regras (`RuleBasedPrioritizationEngine`) por um modelo de ML via `IPrioritizationEngine`.
 - Paginação das demais listagens (times, convites, repositórios) e bloqueio por tentativas de login (além do rate limit por IP).
 - Métricas/tracing (OpenTelemetry) e envio dos logs a um agregador.

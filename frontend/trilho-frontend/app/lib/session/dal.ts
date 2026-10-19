@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { ApiError } from "../api/errors";
 import { fetchCurrentUser } from "../api/users";
 import { initialsOf, roleFromApi } from "../api/mappers";
 import type { User } from "../teams";
@@ -24,12 +25,18 @@ export const verifySession = cache(async (): Promise<Session> => {
  */
 export const getCurrentUser = cache(async (): Promise<User> => {
     const session = await verifySession();
+    let sessionRejected = false;
 
     try {
         return await fetchCurrentUser(session.token, session.userId);
-    } catch {
-        // API indisponível: segue com o que o token informa.
+    } catch (error) {
+        // 401 = a API não aceita mais este token (expirou, usuário desativado, chave trocada).
+        sessionRejected = error instanceof ApiError && error.status === 401;
+        // Qualquer outra falha (API fora do ar): segue com o que o token informa.
     }
+
+    // `redirect` lança internamente; por isso fica fora do try/catch.
+    if (sessionRejected) redirect("/session-expired");
 
     return {
         id: session.userId,

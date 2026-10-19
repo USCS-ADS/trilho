@@ -3,7 +3,7 @@ import type { TaskPriority } from "../tasks/types";
 
 /**
  * Mock da sugestão de prioridade (RF07): hoje só olha a proximidade do prazo.
- * TODO: substituir pela chamada ao módulo de IA (carga + prazo + histórico).
+ * Espelha a regra do backend (RuleBasedPrioritizationEngine) para dar retorno imediato no formulário.
  */
 export function suggestPriority(today: string, dueDate?: string): TaskPriority {
     if (!dueDate) return "medium";
