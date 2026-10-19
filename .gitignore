@@ -1,0 +1,14 @@
+# Segredos e ambientes locais: NUNCA versionar
+.env
+.env.*
+!.env.example
+!.env.prod.example
+*.pem
+*.pfx
+
+# Cópias de segurança do banco geradas na VM
+deploy/backups/
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db

@@ -60,6 +60,62 @@ docker compose --profile full up -d --build
 O `Dockerfile` e o compose estão descritos no README do backend. (Ainda não foram validados num daemon real — veja
 "Pendências conhecidas".)
 
+## Publicação na Azure (VM pequena + MySQL gerenciado), de graça com Azure for Students
+
+Desenho (cabe numa VM de 1 GB de RAM porque o banco fica fora dela):
+
+```
+navegador ─▶ Vercel (Next.js) ─▶ https://<host>.<região>.cloudapp.azure.com ─▶ VM: Caddy ─▶ API (Docker, imagem do GHCR)
+                                                                                └─▶ Azure Database for MySQL Flexible Server (TLS)
+```
+
+Arquivos: `deploy/docker-compose.prod.yml`, `deploy/Caddyfile`, `deploy/.env.prod.example` e `deploy/scripts/*.sh`. A imagem da API é
+construída no GitHub Actions (workflow *Backend CI*, job `publish-image`) e publicada em `ghcr.io/uscs-ads/trilho-api`; a VM só baixa
+(compilar .NET com 1 GB de RAM não é viável).
+
+### 1. Recursos na Azure (portal)
+
+1. **Grupo de recursos** `trilho`, numa região que a sua assinatura permita (assinaturas de estudante costumam limitar regiões, cotas e
+   tamanhos; confira antes de criar). Prefira os EUA (Leste) por ficarem perto da Vercel.
+2. **Azure Database for MySQL Flexible Server**: camada *Burstable* **B1ms**, 32 GB, MySQL 8.0, usuário administrador próprio, acesso
+   público com **regra de firewall só para o IP da VM** (crie depois da VM). Confira o selo de gratuidade no resumo.
+3. **Máquina virtual**: Ubuntu 24.04 LTS, tamanho **B1s** (gratuito por 12 meses no Azure for Students; confirme no portal), autenticação
+   por **chave SSH**, disco Standard SSD de 30 GB. Crie um **IP público Standard estático** com **rótulo DNS** (vira
+   `<rótulo>.<região>.cloudapp.azure.com`). Regras de entrada (NSG): **22 só do seu IP**, **80** e **443**.
+4. *Cost Management* → **alerta de orçamento** (50% e 80% do crédito) e anote a data em que terminam os 12 meses.
+
+### 2. Preparar a VM e publicar
+
+```bash
+ssh <usuario>@<host>
+git clone https://github.com/USCS-ADS/trilho.git /tmp/trilho && bash /tmp/trilho/deploy/scripts/setup-vm.sh   # Docker, swap, firewall, fail2ban
+# saia e entre de novo no SSH (grupo docker); depois:
+git clone https://github.com/USCS-ADS/trilho.git /opt/trilho
+cd /opt/trilho/deploy && cp .env.prod.example .env && nano .env     # segredos NOVOS; nunca os de desenvolvimento
+bash scripts/deploy.sh
+```
+
+- Pacote GHCR privado? Em *GitHub → Packages → trilho-api → Package settings*, torne-o **público** (ou use `docker login ghcr.io` com um
+  token de leitura de pacotes).
+- Primeiro deploy a partir da branch (antes de mesclar o PR): Actions → *Backend CI* → *Run workflow* na branch; depois
+  `bash scripts/deploy.sh sha-<7 primeiros caracteres do commit>`.
+- As migrations rodam na primeira subida e o administrador do seed é criado. Teste: `https://<host>/health/ready` deve responder 200 e as
+  portas 3306 e 8080 não devem estar abertas de fora.
+
+### 3. Ligar o front (Vercel)
+
+No projeto da Vercel (Root Directory `frontend/trilho-frontend`): variável **`API_URL=https://<host>`** em *Production* e *Preview*, e
+redeploy. **Só mescle o PR em `main` depois disso**: a Vercel publica `main`, e em produção o front sem `API_URL` não funciona.
+
+### 4. Rotina
+
+- Atualizar: `cd /opt/trilho && git pull && bash deploy/scripts/deploy.sh`.
+- Backup: o MySQL gerenciado já faz backup automático (restauração pelo portal, *point-in-time*); `deploy/scripts/backup-mysql.sh` gera uma
+  cópia extra (`mysqldump`) com rotação de 7 dias. Baixe-a para fora da VM de vez em quando.
+- Memória: a VM tem swap de 2 GB e a API roda com limite de 450 MB; se a API reiniciar sozinha, veja `docker compose logs api` e
+  `free -m`.
+- Ao fim dos 12 meses (ou do crédito) a assinatura de estudante é desativada: renove como estudante ou migre.
+
 ## Ajustes de segurança embutidos
 
 - Login: rate limit por IP e **bloqueio da conta** após 5 senhas erradas seguidas por 15 min
