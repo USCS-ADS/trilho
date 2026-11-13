@@ -47,7 +47,8 @@ public sealed class FakeSmtpServer : IDisposable
                     }
                     else
                     {
-                        data.AppendLine(line);
+                        // CRLF fixo (AppendLine usaria \n no Linux): o teste procura "\r\n\r\n" entre cabeçalhos e corpo.
+                        data.Append(line).Append("\r\n");
                     }
 
                     continue;

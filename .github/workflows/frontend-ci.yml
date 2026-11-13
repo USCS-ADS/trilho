@@ -30,7 +30,9 @@ jobs:
         run: npm run lint
 
       - name: Types
-        run: npx tsc --noEmit
+        run: |
+          npx next typegen
+          npx tsc --noEmit
 
       - name: Unit tests
         run: npm test
