@@ -203,14 +203,12 @@ A imagem (`Dockerfile`) roda sem privilégios na porta 8080; monte um volume em 
    docker compose up -d
    dotnet restore Trilho.sln
    ```
-2. Configure os segredos (nunca em `appsettings.json`):
+2. Configure os valores da sua máquina (nunca em `appsettings.json`). Copie o modelo para o arquivo local, que o Git ignora, e preencha:
    ```bash
    cd src/Trilho.Api
-   dotnet user-secrets set "Settings:Jwt:SigningKey" "<chave-aleatoria-com-32+-caracteres>"
-   dotnet user-secrets set "Settings:SeedAdmin:Email" "admin@trilho.local"
-   dotnet user-secrets set "Settings:SeedAdmin:Password" "<senha-do-admin>"
+   cp appsettings.Local.example.json appsettings.Local.json   # connection string, chave JWT (32+ caracteres) e administrador
    ```
-   Em desenvolvimento a connection string e o CORS (`http://localhost:3000`) vêm de `appsettings.Development.json`. Em produção use variáveis de ambiente (`Settings__Jwt__SigningKey`, `ConnectionStrings__Connection`, ...).
+   O `appsettings.Local.json` só é lido em desenvolvimento e vale mais que os demais arquivos. O CORS (`http://localhost:3000`) vem de `appsettings.Development.json`. Também funcionam user-secrets (`dotnet user-secrets set ...`) e, em produção, variáveis de ambiente (`Settings__Jwt__SigningKey`, `ConnectionStrings__Connection`, ...).
 3. Rode a aplicação:
    ```bash
    dotnet run --project src/Trilho.Api

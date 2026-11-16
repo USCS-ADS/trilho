@@ -15,6 +15,12 @@ using Trilho.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Valores da máquina de desenvolvimento (senha do banco, chave JWT, administrador). O arquivo não vai para o Git.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+}
+
 // Logs estruturados (JSON, com escopo/CorrelationId) fora do desenvolvimento, para coleta por agregadores.
 if (builder.Environment.IsDevelopment() == false)
 {
