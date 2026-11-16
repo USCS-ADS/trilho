@@ -16,9 +16,12 @@ using Trilho.Infrastructure.Seed;
 var builder = WebApplication.CreateBuilder(args);
 
 // Valores da máquina de desenvolvimento (senha do banco, chave JWT, administrador). O arquivo não vai para o Git.
+// Variáveis de ambiente e argumentos de linha de comando são relidos depois dele para continuarem valendo mais.
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+    builder.Configuration.AddEnvironmentVariables();
+    builder.Configuration.AddCommandLine(args);
 }
 
 // Logs estruturados (JSON, com escopo/CorrelationId) fora do desenvolvimento, para coleta por agregadores.
