@@ -5,6 +5,7 @@
 !.env.prod.example
 *.pem
 *.pfx
+appsettings.Local.json
 
 # Cópias de segurança do banco geradas na VM
 deploy/backups/
