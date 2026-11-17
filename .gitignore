@@ -1,0 +1,18 @@
+# Segredos e ambientes locais: NUNCA versionar
+.env
+.env.*
+!.env.example
+!.env.prod.example
+*.pem
+*.pfx
+appsettings.Local.json
+
+# Cópias de segurança do banco geradas na VM
+deploy/backups/
+
+# Vídeos, áudios e gravações geradas por docs/video
+docs/video/saida/
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db

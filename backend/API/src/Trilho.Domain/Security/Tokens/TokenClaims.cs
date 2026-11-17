@@ -5,4 +5,7 @@ public static class TokenClaims
     public const string UserId = "id";
     public const string Role = "role";
     public const string Name = "unique_name";
+
+    /// <summary>Versão da sessão do usuário (<c>User.TokenVersion</c>) no momento da emissão do token.</summary>
+    public const string TokenVersion = "tv";
 }

@@ -1,0 +1,1032 @@
+[
+  {
+    "name": "Trilho.Domain.Entities.GitRepository",
+    "table": "GitRepositories",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "ConnectedById",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Events",
+        "type": "varchar(100)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "FullName",
+        "type": "varchar(200)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "LastSyncAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Provider",
+        "type": "varchar(20)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Status",
+        "type": "varchar(20)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TeamId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "WebhookSecretProtected",
+        "type": "varchar(1000)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "ConnectedById"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TeamId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "Provider",
+          "FullName"
+        ],
+        "unique": true
+      }
+    ],
+    "fks": [
+      {
+        "column": "ConnectedById",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TeamId",
+        "references": "Trilho.Domain.Entities.Team",
+        "onDelete": "Cascade",
+        "table": "Teams"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.Invite",
+    "table": "Invites",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "AcceptedAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CancelledAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Email",
+        "type": "varchar(256)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "ExpiresAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "FullName",
+        "type": "varchar(200)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "InvitedById",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Role",
+        "type": "varchar(30)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TeamId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TokenHash",
+        "type": "varchar(64)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "InvitedById"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TeamId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TokenHash"
+        ],
+        "unique": true
+      },
+      {
+        "columns": [
+          "Email",
+          "TeamId"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "InvitedById",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TeamId",
+        "references": "Trilho.Domain.Entities.Team",
+        "onDelete": "Cascade",
+        "table": "Teams"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.Notification",
+    "table": "Notifications",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "DedupKey",
+        "type": "varchar(100)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Message",
+        "type": "varchar(300)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "ReadAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "TaskId",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Type",
+        "type": "varchar(40)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "UserId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "TaskId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "UserId",
+          "DedupKey"
+        ],
+        "unique": true
+      },
+      {
+        "columns": [
+          "UserId",
+          "ReadAt",
+          "CreatedAt"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "TaskId",
+        "references": "Trilho.Domain.Entities.TaskItem",
+        "onDelete": "Cascade",
+        "table": "Tasks"
+      },
+      {
+        "column": "UserId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "Cascade",
+        "table": "Users"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.PasswordResetRequest",
+    "table": "PasswordResetRequests",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "Attempts",
+        "type": "int",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "CodeHash",
+        "type": "varchar(100)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "ExpiresAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "UsedAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "UserId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "UserId",
+          "CreatedAt"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "UserId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "Cascade",
+        "table": "Users"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.PendingGitEvent",
+    "table": "PendingGitEvents",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "Attempts",
+        "type": "int",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "EventType",
+        "type": "varchar(60)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "LastError",
+        "type": "varchar(500)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Payload",
+        "type": "longtext",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "ProcessedAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "ReceivedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "RepositoryId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "RepositoryId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "ProcessedAt",
+          "RepositoryId"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "RepositoryId",
+        "references": "Trilho.Domain.Entities.GitRepository",
+        "onDelete": "Cascade",
+        "table": "GitRepositories"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.Subtask",
+    "table": "Subtasks",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "AssigneeId",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "IsDone",
+        "type": "tinyint(1)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TaskId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Title",
+        "type": "varchar(200)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "AssigneeId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TaskId"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "AssigneeId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TaskId",
+        "references": "Trilho.Domain.Entities.TaskItem",
+        "onDelete": "Cascade",
+        "table": "Tasks"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.TaskActivity",
+    "table": "TaskActivities",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "ActorId",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "FromValue",
+        "type": "varchar(100)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "TaskId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "ToValue",
+        "type": "varchar(100)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Type",
+        "type": "varchar(40)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "ActorId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TaskId",
+          "CreatedAt"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "ActorId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TaskId",
+        "references": "Trilho.Domain.Entities.TaskItem",
+        "onDelete": "Cascade",
+        "table": "Tasks"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.TaskComment",
+    "table": "TaskComments",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "AuthorId",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Body",
+        "type": "varchar(2000)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TaskId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "AuthorId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TaskId"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "AuthorId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TaskId",
+        "references": "Trilho.Domain.Entities.TaskItem",
+        "onDelete": "Cascade",
+        "table": "Tasks"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.TaskItem",
+    "table": "Tasks",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "AssigneeId",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CompletedAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "CreatedById",
+        "type": "bigint",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Description",
+        "type": "varchar(2000)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "DueDate",
+        "type": "date",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "GitBranch",
+        "type": "varchar(250)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "LastCommitAt",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Position",
+        "type": "int",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Priority",
+        "type": "varchar(20)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "PullRequestNumber",
+        "type": "int",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "PullRequestState",
+        "type": "varchar(20)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Status",
+        "type": "varchar(20)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "TeamId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Title",
+        "type": "varchar(200)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "UpdatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "AssigneeId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "CreatedById"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "TeamId",
+          "Status",
+          "Position"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "AssigneeId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "CreatedById",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "SetNull",
+        "table": "Users"
+      },
+      {
+        "column": "TeamId",
+        "references": "Trilho.Domain.Entities.Team",
+        "onDelete": "Restrict",
+        "table": "Teams"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.Team",
+    "table": "Teams",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Description",
+        "type": "varchar(500)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "IsArchived",
+        "type": "tinyint(1)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "LeaderId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Name",
+        "type": "varchar(100)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "LeaderId"
+        ],
+        "unique": false
+      },
+      {
+        "columns": [
+          "Name"
+        ],
+        "unique": true
+      }
+    ],
+    "fks": [
+      {
+        "column": "LeaderId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "Restrict",
+        "table": "Users"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.TeamMember",
+    "table": "TeamMembers",
+    "columns": [
+      {
+        "name": "TeamId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "UserId",
+        "type": "bigint",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "JoinedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "TeamId",
+      "UserId"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "UserId"
+        ],
+        "unique": false
+      }
+    ],
+    "fks": [
+      {
+        "column": "TeamId",
+        "references": "Trilho.Domain.Entities.Team",
+        "onDelete": "Cascade",
+        "table": "Teams"
+      },
+      {
+        "column": "UserId",
+        "references": "Trilho.Domain.Entities.User",
+        "onDelete": "Cascade",
+        "table": "Users"
+      }
+    ]
+  },
+  {
+    "name": "Trilho.Domain.Entities.User",
+    "table": "Users",
+    "columns": [
+      {
+        "name": "Id",
+        "type": "bigint",
+        "nullable": false,
+        "auto": true
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime(6)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Email",
+        "type": "varchar(256)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "FailedLoginAttempts",
+        "type": "int",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "IsActive",
+        "type": "tinyint(1)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "LockoutEnd",
+        "type": "datetime(6)",
+        "nullable": true,
+        "auto": false
+      },
+      {
+        "name": "Name",
+        "type": "varchar(200)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Password",
+        "type": "varchar(100)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "Role",
+        "type": "varchar(30)",
+        "nullable": false,
+        "auto": false
+      },
+      {
+        "name": "UserId",
+        "type": "char(36)",
+        "nullable": false,
+        "auto": false
+      }
+    ],
+    "pk": [
+      "Id"
+    ],
+    "indexes": [
+      {
+        "columns": [
+          "Email"
+        ],
+        "unique": true
+      },
+      {
+        "columns": [
+          "UserId"
+        ],
+        "unique": true
+      }
+    ],
+    "fks": []
+  }
+]

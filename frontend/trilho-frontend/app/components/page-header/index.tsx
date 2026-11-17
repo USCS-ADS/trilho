@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { Avatar } from "../avatar";
 import { useCurrentUser } from "../current-user";
+import { NotificationBell } from "../notifications";
 
 interface PageHeaderProps {
     title: string;
@@ -17,7 +18,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
     const currentUser = useCurrentUser();
 
     return (
-        <header className="flex items-start justify-between gap-4 border-b border-trilho-border px-4 py-5 sm:px-8 sm:py-6">
+        <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 border-b border-trilho-border px-4 py-5 sm:px-8 sm:py-6">
             <div className="min-w-0">
                 <h1 className="text-xl font-semibold text-trilho-text">{title}</h1>
                 {description && (
@@ -25,8 +26,9 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
                 )}
             </div>
 
-            <div className="flex shrink-0 flex-wrap items-center justify-end gap-3">
+            <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
                 {actions}
+                <NotificationBell />
                 <Avatar initials={currentUser?.initials ?? "US"} />
             </div>
         </header>

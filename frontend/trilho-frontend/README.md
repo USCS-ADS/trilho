@@ -19,11 +19,11 @@ npm run lint && npx tsc --noEmit && npm run build
 
 | Modo | Quando | Comportamento |
 |---|---|---|
-| **Real** | `API_URL` definida (ex: `http://localhost:5018`) | Login e usuários vão ao backend .NET. |
-| **Demonstração** | sem `API_URL`, ou `USE_MOCK_API=true` | Login e dados simulados, sem backend. Entre com `camila.duarte@exemplo.com` e qualquer senha. **Ignorado em produção.** |
+| **Real** | `API_URL` definida (ex: `http://localhost:5018`) | Todas as telas falam com o backend .NET (auth, usuários, times, tarefas, convites, dashboard, notificações, IA, Git). |
+| **Demonstração** | sem `API_URL`, ou `USE_MOCK_API=true` | Login e dados simulados, sem backend. Entre com `camila.duarte@exemplo.com` e qualquer senha. Criar/alterar é só visual (não persiste). **Ignorado em produção.** |
 
-Times, tarefas, integrações Git e IA ainda **não têm endpoint** no backend: essas telas
-usam dados mockados em ambos os modos (ver "Costuras para a API").
+Para o modo real, suba a API (`backend/API`, ver o README de lá), defina `API_URL` no `.env.local`
+e entre com o administrador criado pelo seed (`Settings:SeedAdmin`).
 
 ## Arquitetura
 
@@ -59,16 +59,42 @@ Convenções:
 3. `app/lib/session/dal.ts` (`verifySession`, `getCurrentUser`) verifica de verdade, no servidor,
    e o `(app)/layout.tsx` entrega o usuário aos componentes de cliente via contexto.
 
-## Costuras para a API
+## Camada de API
 
-Cada domínio expõe funções de consulta (`listTasks()`, `getTaskById()`, `listTeams()`,
-`listRepositories()`...) sobre dados mockados. Ao integrar, troque a implementação por chamadas
-em `app/lib/api` — as telas não mudam. Ver os `// TODO` nos pontos de escrita.
+Tudo roda no servidor (`app/lib/api`, marcado com `server-only`):
 
-## Lacunas conhecidas do backend (impactam o frontend)
+| Arquivo | Endpoints |
+|---|---|
+| `auth.ts`, `users.ts` | `/api/Auth`, `/api/Auth/me`, `/api/User` (pagina via `X-Total-Count`) |
+| `teams.ts` | `/api/Team` (inclui carga de trabalho calculada pelo backend) |
+| `tasks.ts`, `prioritization.ts` | `/api/Task` (board, detalhe, mover, subtarefas, comentários, histórico), `/api/Prioritization` |
+| `invites.ts`, `password-reset.ts` | `/api/Invite`, `/api/PasswordReset` |
+| `dashboard.ts`, `notifications.ts`, `git.ts` | `/api/Dashboard`, `/api/Notification`, `/api/GitRepository` |
 
-- Sem endpoints de **times, tarefas, subtarefas, comentários, Git e IA**.
-- Sem **convite por e-mail / ativação de conta / redefinição de senha** (RF01).
-- Perfis só **`administrador`** e **`user`**; "Líder de Time" não existe como perfil.
-- Nenhum endpoint exige **`[Authorize]`** nem há validação do JWT; **sem CORS**.
-- Senha exige também **minúscula** e especial em `! ? * . & $ # @` (mais estrito que o RF01).
+- Os DTOs (`dtos.ts`) espelham `Trilho.Communication`; os mapeadores (`mappers.ts`) convertem para os
+  tipos de domínio das telas (ids numéricos viram `string`, perfis `administrador/lider/user` viram
+  `admin/leader/member`).
+- Escritas são **Server Actions** (`actions.ts` ao lado de cada rota): validam com zod, chamam a API e
+  devolvem `{ ok, message }`; os componentes de cliente fazem atualização otimista e desfazem se o
+  servidor recusar (ex: concluir tarefa com subtarefas pendentes). **A regra de permissão é sempre a do
+  backend** — esconder botões na tela é só ergonomia.
+- O sino de notificações (`components/notifications`) fica no layout autenticado e atualiza a cada minuto.
+- A redefinição de senha guarda o e-mail/código entre os 3 passos num cookie httpOnly de 15 min
+  restrito a `/reset-password`.
+
+### Convenção para ligar o Git às tarefas
+
+Cite `#123`, `task-123` ou `trilho-123` na branch, no título/descrição do PR ou no commit: o webhook
+move a tarefa (PR aberto → Em Revisão, merge → Concluído) e registra no histórico.
+
+## Testes
+
+```bash
+npm test          # Vitest (unitários: mappers, schemas, regras de senha, filtros do Kanban, mensagens de erro)
+npm run test:watch
+npm run test:e2e  # Playwright (Chromium) em modo demonstração: login, arrastar com mouse, filtros, perfis, responsivo e acessibilidade (axe, WCAG 2.1 AA)
+```
+
+Na primeira vez: `npx playwright install chromium`.
+
+O CI (`.github/workflows/frontend-ci.yml`) roda lint, `tsc`, testes, build e `npm audit --omit=dev`.

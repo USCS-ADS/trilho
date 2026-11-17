@@ -21,6 +21,8 @@
   /* Marca / destaque */
   --color-trilho-accent: #4f8cff; /* azul primário */
   --color-trilho-accent-2: #22d3ee; /* ciano secundário */
+  /* Texto azul sobre fundo azul translúcido (selos, etiquetas): o azul da marca fica abaixo de 4,5:1 nesse fundo. */
+  --color-trilho-accent-soft: #86adff;
   /* Fundo de botões preenchidos: branco sobre ele passa AA (4.57:1); o azul da marca acima não passa (3.22:1). */
   --color-trilho-accent-strong: #2f6feb;
  
@@ -28,6 +30,8 @@
   --color-trilho-success: #34d399;
   --color-trilho-warning: #f59e0b;
   --color-trilho-danger: #f87171;
+  /* Texto de selos vermelhos sobre fundo vermelho translúcido (o vermelho acima fica abaixo de 4,5:1 nesse fundo). */
+  --color-trilho-danger-soft: #fca5a5;
  
   /* Tema claro (gráficos, diagramas, documentos) */
   --color-trilho-navy: #1b2432;

@@ -25,7 +25,7 @@ export function PriorityPicker({ value, onChange }: PriorityPickerProps) {
                             onChange={() => onChange(priority)}
                             className="peer sr-only"
                         />
-                        <span className="inline-block rounded-full border border-trilho-border px-3 py-1.5 text-xs text-trilho-dim transition-colors hover:text-trilho-text peer-checked:border-trilho-accent peer-checked:bg-trilho-accent/15 peer-checked:text-trilho-accent peer-focus-visible:ring-2 peer-focus-visible:ring-trilho-accent">
+                        <span className="inline-block rounded-full border border-trilho-border px-3 py-1.5 text-xs text-trilho-dim transition-colors hover:text-trilho-text peer-checked:border-trilho-accent peer-checked:bg-trilho-accent/15 peer-checked:text-trilho-accent-soft peer-focus-visible:ring-2 peer-focus-visible:ring-trilho-accent">
                             {PRIORITY_LABELS[priority]}
                         </span>
                     </label>

@@ -309,4 +309,16 @@
   <data name="GIT_WEBHOOK_PAYLOAD_INVALID" xml:space="preserve">
     <value>O conteúdo do webhook é inválido.</value>
   </data>
+  <data name="CURRENT_PASSWORD_REQUIRED" xml:space="preserve">
+    <value>A senha atual é obrigatória.</value>
+  </data>
+  <data name="CURRENT_PASSWORD_INVALID" xml:space="preserve">
+    <value>A senha atual está incorreta.</value>
+  </data>
+  <data name="CANNOT_DEACTIVATE_YOURSELF" xml:space="preserve">
+    <value>você não pode desativar a própria conta</value>
+  </data>
+  <data name="LOGIN_LOCKED" xml:space="preserve">
+    <value>Muitas tentativas de login malsucedidas. Tente novamente em alguns minutos ou redefina a senha.</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 import type { GitRepository } from "./types";
 
-// TODO: substituir por dados reais da API (repositórios conectados e status de sincronização).
+// Dados do MODO DEMONSTRAÇÃO (sem API_URL). Com a API ligada, vêm de GET /api/GitRepository.
 
 export const REPOSITORIES: GitRepository[] = [
     {

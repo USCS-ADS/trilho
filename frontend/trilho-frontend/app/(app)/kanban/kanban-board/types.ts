@@ -1,4 +1,5 @@
 import type { BadgeTone } from "@/app/components/badge";
+import type { TaskPriority } from "@/app/lib/tasks/types";
 
 export interface KanbanTag {
     label: string;
@@ -10,7 +11,9 @@ export interface KanbanCardData {
     id: string;
     title: string;
     tags: KanbanTag[];
+    priority: TaskPriority;
     /** Ausente quando a tarefa é do time inteiro. */
+    assigneeId?: string;
     assigneeInitials?: string;
     isOverdue: boolean;
     /** Ausente em cards criados só no cliente (ainda sem página de detalhe). */

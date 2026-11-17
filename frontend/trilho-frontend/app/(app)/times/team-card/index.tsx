@@ -1,3 +1,5 @@
+import { Badge } from "@/app/components/badge";
+import { Button } from "@/app/components/button";
 import { Card } from "@/app/components/card";
 import { ProgressBar } from "@/app/components/progress-bar";
 import type { TeamWithMembers } from "@/app/lib/teams/types";
@@ -6,9 +8,11 @@ import { getWorkloadTone } from "@/app/lib/teams/workload";
 interface TeamCardProps {
     team: TeamWithMembers;
     leaderName: string;
+    /** Ausente = o usuário não gerencia este time. */
+    onManage?: () => void;
 }
 
-export function TeamCard({ team, leaderName }: TeamCardProps) {
+export function TeamCard({ team, leaderName, onManage }: TeamCardProps) {
     const rows = [
         { label: "Membros", value: team.members.length },
         { label: "Tarefas em andamento", value: team.tasksInProgress },
@@ -28,6 +32,11 @@ export function TeamCard({ team, leaderName }: TeamCardProps) {
                     <h2 className="truncate font-semibold text-trilho-text">{team.name}</h2>
                     <p className="truncate text-xs text-trilho-dim">Líder: {leaderName}</p>
                 </div>
+                {team.isArchived && (
+                    <span className="ml-auto shrink-0">
+                        <Badge tone="warning">Arquivado</Badge>
+                    </span>
+                )}
             </div>
 
             <dl className="mb-3 flex flex-col gap-2 text-sm">
@@ -44,6 +53,18 @@ export function TeamCard({ team, leaderName }: TeamCardProps) {
                 tone={getWorkloadTone(team.workload)}
                 label={`Carga de trabalho do time ${team.name}`}
             />
+
+            {onManage && (
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="mt-4 w-full text-sm"
+                    onClick={onManage}
+                    aria-label={`Gerenciar o time ${team.name}`}
+                >
+                    Gerenciar
+                </Button>
+            )}
         </Card>
     );
 }
