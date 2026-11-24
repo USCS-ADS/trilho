@@ -62,7 +62,7 @@ const cards = {
 
     qualidade: (q) => `<h2>Qualidade e segurança</h2>
 <div class="big">
-<div class="num"><b>${q.get("back") ?? "167"}</b><span>testes automatizados do backend</span></div>
+<div class="num"><b>${q.get("back") ?? "253"}</b><span>testes automatizados do backend</span></div>
 <div class="num"><b>${q.get("unit") ?? "41"}</b><span>testes unitários do front</span></div>
 <div class="num"><b>${q.get("e2e") ?? "39"}</b><span>testes de ponta a ponta, com acessibilidade (axe)</span></div></div>
 <ul style="grid-template-columns:1fr 1fr;font-size:23px"><li>Senhas com BCrypt, sessão em cookie httpOnly</li><li>Bloqueio após 5 senhas erradas</li>

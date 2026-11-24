@@ -302,7 +302,7 @@ pres.addSection({ title: "Apresentação (7 min)" });
 {
     const s = pres.addSlide({ masterName: "Titulo", sectionTitle: "Apresentação (7 min)" });
     s.addText("Qualidade verificada por testes", { placeholder: "title" });
-    const stats = [["167", "testes automatizados do backend"], ["41", "testes unitários do front-end"], ["39", "testes de ponta a ponta, com acessibilidade (axe)"]];
+    const stats = [["253", "testes automatizados do backend"], ["41", "testes unitários do front-end"], ["39", "testes de ponta a ponta, com acessibilidade (axe)"]];
     for (const [i, [n, label]] of stats.entries()) {
         const x = 0.6 + i * 4.15;
         s.addShape(pres.ShapeType.roundRect, { x, y: 1.6, w: 3.85, h: 2.9, fill: { color: C.text2 }, line: { color: C.text2 }, rectRadius: 0.12, shadow: shadow(), objectName: `Número ${n}` });

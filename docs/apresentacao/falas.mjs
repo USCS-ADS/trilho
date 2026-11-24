@@ -83,7 +83,7 @@ export const falas = [
         id: "qualidade",
         quem: "Vitor Medina",
         texto:
-            "Para garantir a qualidade, temos cento e sessenta e sete testes automatizados no backend, quarenta e um testes unitários no front-end " +
+            "Para garantir a qualidade, temos duzentos e cinquenta e três testes automatizados no backend, quarenta e um testes unitários no front-end " +
             "e trinta e nove testes de ponta a ponta, que incluem verificação de acessibilidade com a ferramenta axe. " +
             "Os testes do backend cobrem as regras de negócio, os endpoints, o envio de e-mail e os webhooks; os de ponta a ponta percorrem as telas do sistema. " +
             "A integração contínua roda tudo a cada alteração. E o quadro também funciona no celular, com colunas roláveis.",

@@ -455,9 +455,9 @@ export const scenes = [
             {
                 id: "qualidade",
                 say: v(
-                    "A qualidade é verificada por testes automatizados: 167 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade.",
-                    "A qualidade é verificada por testes automatizados: 167 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade com axe. Há fluxos de integração contínua no GitHub Actions para o backend e para o front.",
-                    "A qualidade é verificada por testes automatizados: 167 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade com axe. Há fluxos de integração contínua no GitHub Actions para o backend e para o front. Na segurança, os webhooks são validados por assinatura HMAC, há limite de tentativas de login, bloqueio de conta e invalidação de sessões ao trocar a senha, e os segredos ficam fora do repositório.",
+                    "A qualidade é verificada por testes automatizados: 253 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade.",
+                    "A qualidade é verificada por testes automatizados: 253 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade com axe. Há fluxos de integração contínua no GitHub Actions para o backend e para o front.",
+                    "A qualidade é verificada por testes automatizados: 253 no backend, 41 unitários e 39 de ponta a ponta no front, incluindo auditoria de acessibilidade com axe. Há fluxos de integração contínua no GitHub Actions para o backend e para o front. Na segurança, os webhooks são validados por assinatura HMAC, há limite de tentativas de login, bloqueio de conta e invalidação de sessões ao trocar a senha, e os segredos ficam fora do repositório.",
                 ),
                 do: async (r) => {
                     await r.card("qualidade");
