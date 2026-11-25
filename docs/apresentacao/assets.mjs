@@ -12,12 +12,11 @@ import * as si from "react-icons/si";
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "img");
 fs.mkdirSync(OUT, { recursive: true });
 
-// Logo: quadrado arredondado com o degradê do sistema (#4F8CFF -> #22D3EE) e o "T" desenhado em formas (sem depender de fontes).
+// Logo igual ao do site: quadrado arredondado azul liso (#4F8CFF) com o "T" escuro (#0B1020), desenhado em formas (sem depender de fontes).
 const logo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="512" height="512">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4F8CFF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient></defs>
-  <rect width="256" height="256" rx="56" fill="url(#g)"/>
-  <rect x="62" y="60" width="132" height="38" rx="8" fill="#fff"/>
-  <rect x="108" y="60" width="40" height="140" rx="8" fill="#fff"/>
+  <rect width="256" height="256" rx="52" fill="#4F8CFF"/>
+  <rect x="62" y="64" width="132" height="36" rx="8" fill="#0B1020"/>
+  <rect x="108" y="64" width="40" height="132" rx="8" fill="#0B1020"/>
 </svg>`;
 await sharp(Buffer.from(logo)).png().toFile(path.join(OUT, "logo-trilho.png"));
 
