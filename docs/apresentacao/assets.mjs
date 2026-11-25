@@ -33,6 +33,8 @@ await QRCode.toFile(path.join(OUT, "qr-repositorio.png"), "https://github.com/US
 const techs = [
     ["nextjs", "SiNextdotjs", "000000"],
     ["react", "SiReact", "61DAFB"],
+    ["typescript", "SiTypescript", "3178C6"],
+    ["tailwind", "SiTailwindcss", "06B6D4"],
     ["dotnet", "SiDotnet", "512BD4"],
     ["mysql", "SiMysql", "4479A1"],
     ["docker", "SiDocker", "2496ED"],
