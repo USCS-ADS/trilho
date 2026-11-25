@@ -23,6 +23,6 @@ Os números dos slides vêm dos testes de verdade: backend 253 (`UseCases.Test` 
 
 ## Versão anterior
 ```bash
-NODE_PATH="$PWD/node_modules" node build.mjs    # saída: saida/Trilho-Apresentacao.pptx e saida/roteiro-fala.md
+PPTX_SKILL_DIR=<pasta> NODE_PATH="$PWD/node_modules" node build.mjs    # saída: saida/Trilho-Apresentacao.pptx e saida/roteiro-fala.md
 ```
-`applyTheme` (cores do tema no arquivo) vem da skill `pptx`; se o caminho for outro, defina `PPTX_SKILL_DIR`.
+Esta versão exige a variável `PPTX_SKILL_DIR` (pasta com `scripts/apply_theme.js`, que grava as cores do tema no arquivo).

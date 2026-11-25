@@ -1,6 +1,6 @@
 // Gera os slides da apresentação final do Trilho (7 min + 3 min de perguntas).
 // Uso: node build.mjs   (saída em saida/: Trilho-Apresentacao.pptx e roteiro-fala.md)
-// Requer a skill "pptx" só para gravar as cores do tema no arquivo (applyTheme): defina PPTX_SKILL_DIR se o caminho for outro.
+// Requer PPTX_SKILL_DIR: pasta com scripts/apply_theme.js, usado só para gravar as cores do tema no arquivo (applyTheme).
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -18,9 +18,11 @@ const FIG = path.resolve(DIR, "..", "relatorio", "figuras");
 const OUT = path.join(DIR, "saida");
 fs.mkdirSync(OUT, { recursive: true });
 
-const SKILL_DIR =
-    process.env.PPTX_SKILL_DIR ??
-    "C:/Users/Vitor Medina/AppData/Local/Claude-Data/claude_pzs8sxrjxfjjc/local-agent-mode-sessions/skills-plugin/ed282860-e1cc-48b2-8aa2-259d9847c77e/ae647b67-8d6d-44f0-bc5c-7db38cb6c4eb/skills/pptx";
+const SKILL_DIR = process.env.PPTX_SKILL_DIR;
+if (!SKILL_DIR) {
+    console.error("Defina PPTX_SKILL_DIR com a pasta que contém scripts/apply_theme.js (utilitário de tema de arquivos .pptx).");
+    process.exit(1);
+}
 const { applyTheme } = require(path.join(SKILL_DIR, "scripts", "apply_theme.js"));
 
 // ---------------------------------------------------------------- tema
