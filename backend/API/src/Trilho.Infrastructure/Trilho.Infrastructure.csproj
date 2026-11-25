@@ -15,6 +15,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.32" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+    <!-- Fixa a versão corrigida do driver (o Pomelo 8.0.2 traz a 2.3.5, com aviso de segurança). -->
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
   </ItemGroup>
 

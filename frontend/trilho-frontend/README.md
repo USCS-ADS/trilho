@@ -4,7 +4,7 @@ Interface web do Trilho (gestão inteligente de times e projetos de desenvolvime
 Next.js 16 (App Router) · React 19 · Tailwind 4 · zod · dnd-kit.
 
 > Esta versão do Next tem mudanças em relação ao que a maioria dos materiais descreve.
-> Consulte `node_modules/next/dist/docs/` antes de usar uma API (ver `AGENTS.md`).
+> Consulte `node_modules/next/dist/docs/` antes de usar uma API.
 
 ## Rodando
 

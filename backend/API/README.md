@@ -1,8 +1,8 @@
 # Trilho.Api
 
-API REST em **.NET 8** para cadastro de usuários e autenticação, construída como exemplo prático de **Clean Architecture**, princípios **SOLID** e **Injeção de Dependência**. Faz CRUD completo de usuário, hashing de senha com BCrypt e emissão de token **JWT** no login.
+API REST em **.NET 8** do Trilho (gestão de times, tarefas e projetos de desenvolvimento): usuários e autenticação com **JWT**, times, tarefas e subtarefas, quadro Kanban, priorização assistida, notificações, dashboard e integração com GitHub e GitLab por webhooks. Construída com **Clean Architecture**, princípios **SOLID** e **Injeção de Dependência**; as senhas são guardadas com BCrypt.
 
-> Projeto de portfólio: o objetivo é demonstrar organização em camadas, separação de responsabilidades e boas práticas de uma Web API em C#, não é um produto em produção.
+> Projeto de Extensão (ADS, USCS): demonstra organização em camadas, separação de responsabilidades e boas práticas de uma Web API em C#. Ainda não está publicado: roda localmente (veja [Como executar](#como-executar)).
 
 ## Sumário
 
@@ -19,7 +19,7 @@ API REST em **.NET 8** para cadastro de usuários e autenticação, construída 
 
 ## Sobre o projeto
 
-A API expõe operações de CRUD sobre a entidade `User` (nome, e-mail, senha e papel/role) e um endpoint de login que valida as credenciais e devolve um JWT assinado. Toda a lógica de negócio fica isolada da camada web e da camada de persistência, seguindo Clean Architecture: as regras de domínio não conhecem detalhes de infraestrutura (banco, criptografia, geração de token), apenas contratos (`interfaces`) que a Infraestrutura implementa — isso é o que viabiliza a Inversão de Dependência (o "D" do SOLID) e torna o projeto fácil de testar e de trocar peças (por exemplo, trocar MySQL por outro banco sem tocar em Domain/Application).
+A API expõe os recursos do Trilho (usuários, times, tarefas, subtarefas, comentários, convites, notificações, repositórios Git, priorização e dashboard) em onze grupos de endpoints, e um endpoint de login que valida as credenciais e devolve um JWT assinado. Toda a lógica de negócio fica isolada da camada web e da camada de persistência, seguindo Clean Architecture: as regras de domínio não conhecem detalhes de infraestrutura (banco, criptografia, geração de token), apenas contratos (`interfaces`) que a Infraestrutura implementa — isso é o que viabiliza a Inversão de Dependência (o "D" do SOLID) e torna o projeto fácil de testar e de trocar peças (por exemplo, trocar MySQL por outro banco sem tocar em Domain/Application).
 
 ## Arquitetura
 
