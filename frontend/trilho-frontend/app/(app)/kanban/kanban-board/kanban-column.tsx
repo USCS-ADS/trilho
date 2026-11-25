@@ -5,9 +5,10 @@ import type { KanbanColumnData } from "./types";
 
 interface KanbanColumnProps {
     column: KanbanColumnData;
+    isDragDisabled?: boolean;
 }
 
-export function KanbanColumn({ column }: KanbanColumnProps) {
+export function KanbanColumn({ column, isDragDisabled = false }: KanbanColumnProps) {
     const { setNodeRef, isOver } = useDroppable({ id: column.id });
 
     return (
@@ -32,7 +33,7 @@ export function KanbanColumn({ column }: KanbanColumnProps) {
                     }`}
                 >
                     {column.cards.map((card) => (
-                        <KanbanCard key={card.id} card={card} />
+                        <KanbanCard key={card.id} card={card} isDragDisabled={isDragDisabled} />
                     ))}
                 </div>
             </SortableContext>

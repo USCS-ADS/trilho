@@ -1,0 +1,11 @@
+# Segredos e ambientes locais: NUNCA versionar
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+appsettings.Local.json
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db

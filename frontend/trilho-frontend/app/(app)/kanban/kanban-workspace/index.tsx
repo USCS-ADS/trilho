@@ -7,11 +7,18 @@ import type { AssigneeSuggestion } from "@/app/lib/ai-suggestions/assignee";
 import type { NewTaskInput } from "@/app/lib/tasks/types";
 import type { TeamWithMembers } from "@/app/lib/teams/types";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createTaskAction, moveTaskAction } from "../actions";
+import { BoardFilters } from "../board-filters";
 import { KanbanBoard } from "../kanban-board";
 import type { CardMove } from "../kanban-board/board";
 import { draftToCard } from "../kanban-board/draft-to-card";
+import {
+    EMPTY_FILTERS,
+    filterColumns,
+    hasActiveFilters,
+    type BoardFilters as BoardFiltersState,
+} from "../kanban-board/filter-columns";
 import type { KanbanColumnData } from "../kanban-board/types";
 import { NewTaskModal } from "../new-task-modal";
 
@@ -37,7 +44,13 @@ export function KanbanWorkspace({
     const [columns, setColumns] = useState(initialColumns);
     const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
     const [moveError, setMoveError] = useState<string>();
+    const [filters, setFilters] = useState<BoardFiltersState>(EMPTY_FILTERS);
     const localIdCounter = useRef(0);
+
+    const members = teams.find((candidate) => candidate.id === team.id)?.members ?? [];
+    const visibleColumns = useMemo(() => filterColumns(columns, filters), [columns, filters]);
+    const countCards = (list: KanbanColumnData[]) =>
+        list.reduce((total, column) => total + column.cards.length, 0);
 
     /** Devolve a mensagem de erro (ou `undefined` se criou) para o modal exibir. */
     async function handleCreateTask(input: NewTaskInput): Promise<string | undefined> {
@@ -136,10 +149,19 @@ export function KanbanWorkspace({
                     </p>
                 )}
 
+                <BoardFilters
+                    filters={filters}
+                    onChange={setFilters}
+                    members={members}
+                    visibleCount={countCards(visibleColumns)}
+                    totalCount={countCards(columns)}
+                />
+
                 <KanbanBoard
-                    columns={columns}
+                    columns={visibleColumns}
                     onColumnsChange={setColumns}
                     onCardMoved={handleCardMoved}
+                    isDragDisabled={hasActiveFilters(filters)}
                 />
             </div>
 

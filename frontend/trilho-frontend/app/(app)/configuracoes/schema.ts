@@ -1,4 +1,4 @@
-import { emailField, requiredText } from "@/app/lib/validation";
+import { emailField, passwordField, requiredText } from "@/app/lib/validation";
 import { USER_ROLES } from "@/app/lib/teams/roles";
 import * as z from "zod";
 
@@ -22,3 +22,30 @@ export function createInviteSchema(existingEmails: string[]) {
         role: z.enum(USER_ROLES, { error: "Selecione o perfil de acesso." }),
     });
 }
+
+/** Admin cria o usuário direto (sem convite): a senha inicial já vem definida. */
+export function createUserSchema(existingEmails: string[]) {
+    return z.object({
+        name: requiredText("Informe o nome completo.", 2),
+        email: emailField.refine((email) => !existingEmails.includes(email.toLowerCase()), {
+            error: "Este e-mail já está cadastrado ou foi convidado.",
+        }),
+        password: passwordField,
+        role: z.enum(USER_ROLES, { error: "Selecione o perfil de acesso." }),
+    });
+}
+
+export const changePasswordSchema = z
+    .object({
+        currentPassword: z.string().min(1, { error: "Informe a senha atual." }),
+        newPassword: passwordField,
+        confirmation: z.string().min(1, { error: "Confirme a nova senha." }),
+    })
+    .refine((values) => values.newPassword === values.confirmation, {
+        path: ["confirmation"],
+        error: "As senhas não coincidem.",
+    })
+    .refine((values) => values.newPassword !== values.currentPassword, {
+        path: ["newPassword"],
+        error: "A nova senha deve ser diferente da atual.",
+    });

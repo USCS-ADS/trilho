@@ -1,34 +1,28 @@
 import { Card, CardTitle } from "@/app/components/card";
+import type { DashboardData } from "@/app/lib/dashboard/types";
 
-// TODO: substituir por dados reais da API (tarefas concluídas por sprint).
-const SPRINT_COMPLETIONS = [
-    { sprint: "S1", value: 18, tone: "bg-trilho-surface-3" },
-    { sprint: "S2", value: 22, tone: "bg-trilho-surface-3" },
-    { sprint: "S3", value: 24, tone: "bg-trilho-surface-3" },
-    { sprint: "S4", value: 30, tone: "bg-trilho-accent" },
-    { sprint: "S5", value: 34, tone: "bg-trilho-accent-2" },
-];
-
-export function SprintChart() {
-    const maxValue = Math.max(...SPRINT_COMPLETIONS.map((sprint) => sprint.value));
+export function SprintChart({ sprints }: { sprints: NonNullable<DashboardData["sprints"]> }) {
+    const maxValue = Math.max(1, ...sprints.map((sprint) => sprint.completed));
 
     return (
         <Card>
             <CardTitle>Tarefas concluídas por sprint</CardTitle>
 
             <div className="flex h-40 items-stretch gap-3">
-                {SPRINT_COMPLETIONS.map((sprint) => (
-                    <div
-                        key={sprint.sprint}
-                        className="flex flex-1 flex-col items-center gap-2"
-                    >
+                {sprints.map((sprint) => (
+                    <div key={sprint.label} className="flex flex-1 flex-col items-center gap-2">
+                        <span className="text-xs text-trilho-text">{sprint.completed}</span>
                         <div className="flex w-full flex-1 items-end">
                             <div
-                                className={`w-full rounded-t-md ${sprint.tone}`}
-                                style={{ height: `${(sprint.value / maxValue) * 100}%` }}
+                                className={`w-full rounded-t-md ${
+                                    sprint.isCurrent ? "bg-trilho-accent-2" : "bg-trilho-surface-3"
+                                }`}
+                                style={{ height: `${(sprint.completed / maxValue) * 100}%`, minHeight: "2px" }}
                             />
                         </div>
-                        <span className="text-xs text-trilho-dim">{sprint.sprint}</span>
+                        <span className={`text-xs ${sprint.isCurrent ? "text-trilho-text" : "text-trilho-dim"}`}>
+                            {sprint.label}
+                        </span>
                     </div>
                 ))}
             </div>

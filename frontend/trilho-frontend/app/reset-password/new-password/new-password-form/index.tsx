@@ -4,24 +4,31 @@ import { Button } from "@/app/components/button";
 import { Input } from "@/app/components/input";
 import { PasswordRules } from "@/app/components/password-rules";
 import { useFormValidation } from "@/app/lib/validation/use-form-validation";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { confirmResetAction } from "../../actions";
 import { newPasswordSchema } from "../../schema";
 
 export function NewPasswordForm() {
-    const router = useRouter();
     const [password, setPassword] = useState("");
     const [confirmation, setConfirmation] = useState("");
+    const [submitError, setSubmitError] = useState<string>();
+    const [isPending, setIsPending] = useState(false);
     const { errors, validateValues, clearError } = useFormValidation(newPasswordSchema);
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const data = validateValues({ password, passwordConfirmation: confirmation });
         if (!data) return;
 
-        // TODO: chamar a API que redefine a senha — endpoint ainda não existe.
-        router.push("/login");
+        setSubmitError(undefined);
+        setIsPending(true);
+
+        // Sucesso redireciona ao login (dentro da action); só volta aqui quando há erro.
+        const result = await confirmResetAction(data.password, data.passwordConfirmation);
+
+        setIsPending(false);
+        if (result && !result.ok) setSubmitError(result.message);
     }
 
     return (
@@ -56,8 +63,14 @@ export function NewPasswordForm() {
                 required
             />
 
-            <Button type="submit" className="mt-2 w-full">
-                Redefinir senha
+            {submitError && (
+                <p role="alert" className="mb-2 text-sm text-trilho-danger">
+                    {submitError}
+                </p>
+            )}
+
+            <Button type="submit" className="mt-2 w-full" disabled={isPending}>
+                {isPending ? "Salvando..." : "Redefinir senha"}
             </Button>
         </form>
     );

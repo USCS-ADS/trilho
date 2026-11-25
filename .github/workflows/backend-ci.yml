@@ -40,5 +40,6 @@ jobs:
     needs: build-and-test
     steps:
       - uses: actions/checkout@v4
+      # O diretório de trabalho padrão já é backend/API (o contexto do Dockerfile), então o contexto é ".".
       - name: Build da imagem (sem publicar)
-        run: docker build -t trilho-api:ci backend/API
+        run: docker build -t trilho-api:ci .
